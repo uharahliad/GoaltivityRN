@@ -39,8 +39,8 @@ function useStyles() {
     content: {
       flex: 1,
       justifyContent: 'center',
-      paddingHorizontal: 16,
-      paddingVertical: 32,
+      // paddingHorizontal: 16,
+      // paddingVertical: 32,
     },
     forgotPasswordContainer: {
       flexDirection: 'row',
@@ -139,6 +139,7 @@ const Survey = ({navigation}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.content}>
             <TypeformEmbed
+              originWhitelist={['*']}
               url={link}
               onSubmit={() => dispatch(setSignIn(true))}
               hidden={{email: 'john@example.com'}}

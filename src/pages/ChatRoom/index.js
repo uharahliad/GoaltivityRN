@@ -4,7 +4,6 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import {TwilioService} from '../../api/twilioService';
 import auth from '../../api/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {Client} from 'twilio-chat';
 import {useDispatch} from 'react-redux';
 
 function ChatRoom({route}) {
@@ -19,7 +18,7 @@ function ChatRoom({route}) {
     chatClientChannel.current = channel;
     chatClientChannel.current.on('messageAdded', message => {
       const newMessage = TwilioService.getInstance().parseMessage(message);
-      const {giftedId, author} = message.attributes;
+      const {giftedId} = message.attributes;
       if (giftedId) {
         setMessages(prevMessages => {
           if (prevMessages.some(({_id}) => _id === giftedId)) {
@@ -48,7 +47,7 @@ function ChatRoom({route}) {
         );
         setMessages(newMessages);
       })
-      .catch(err => console.log({message: err.message, type: 'danger'}))
+      .catch(err => Alert.alert(`${err.message}`))
       .finally(() => setLoading(false));
   }, [name, identity, setChannelEvents, users]);
 

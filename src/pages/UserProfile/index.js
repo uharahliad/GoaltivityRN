@@ -53,7 +53,7 @@ const UserProfile = ({navigation, route}) => {
                 marginTop: 15,
                 marginLeft: 15,
               }}>
-              {user.avatar ? (
+              {user.avatar && user.avatar.length ? (
                 <Avatar.Image source={{uri: user.avatar}} />
               ) : (
                 <Avatar.Text

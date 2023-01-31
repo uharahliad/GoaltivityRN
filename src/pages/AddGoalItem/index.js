@@ -176,11 +176,15 @@ const AddGoalItem = ({navigation}) => {
     }
   };
   const onSubmitEditing = () => {
-    setCriteriaItems(current => [
-      ...current,
-      {successCriteria: criteria, value: criteria},
-    ]);
-    setCriteria('');
+    if (criteria) {
+      setCriteriaItems(current => [
+        ...current,
+        {successCriteria: criteria, value: criteria},
+      ]);
+      setCriteria('');
+    } else {
+      Alert.alert('Cannot add emtpy value');
+    }
   };
   const handleClick = data => {
     setCriteriaItems(current =>

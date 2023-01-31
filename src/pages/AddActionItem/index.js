@@ -196,7 +196,8 @@ const AddActionItem = ({navigation}) => {
           value: item.id,
         };
       });
-      if (goalsSelectData.length === 1) {
+      console.log(goalsSelectData);
+      if (goalsSelectData.length) {
         setGoalsValue(goalsSelectData[0].value);
       }
       setGoalsSelect(goalsSelectData);
@@ -204,6 +205,7 @@ const AddActionItem = ({navigation}) => {
   }, [goalsData]);
 
   useEffect(() => {
+    console.log(goalsValue);
     if (goalsData && goalsValue) {
       const goal = goalsData.filter(item => item.id === goalsValue);
       const startDate = new Date(goal[0].start_date);

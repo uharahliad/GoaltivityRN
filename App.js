@@ -18,6 +18,7 @@ import {
   View,
   Image,
   Alert,
+  Linking,
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {NavigationContainer, useRoute} from '@react-navigation/native';
@@ -43,6 +44,7 @@ import MemberProfile from './src/pages/MemberProfile';
 import UserProfile from './src/pages/UserProfile';
 import EditProfile from './src/pages/EditProfile';
 import ChangePassword from './src/pages/ChangePassword';
+import EmailVerification from './src/pages/EmailVerification';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {setSignIn} from './src/redux/reducers/signInSlice';
@@ -370,8 +372,24 @@ const App = () => {
     getUser();
   }, [dispatch]);
 
+  const config = {
+    screens: {
+      EmailVerification: {
+        path: 'verify/:token',
+        parse: {
+          token: token => `${token}`,
+        },
+      },
+    },
+  };
+
+  const linking = {
+    prefixes: ['goaltivity://', 'https://goaltivity.com'],
+    config,
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <Stack.Navigator
         screenOptions={{
           header: props => <CustomNavigationBar {...props} />,
@@ -413,6 +431,10 @@ const App = () => {
             <Stack.Screen name="SignUp" component={SignUp} />
             <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
             <Stack.Screen name="Survey" component={Survey} />
+            <Stack.Screen
+              name="EmailVerification"
+              component={EmailVerification}
+            />
           </>
         )}
       </Stack.Navigator>

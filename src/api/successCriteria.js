@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {BACK_URL} from '@env';
 
-console.log(BACK_URL);
+console.log(BACK_URL, 1);
 
 const successCriteria = {
   getSuccessCriteria: async token => {

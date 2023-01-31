@@ -15,7 +15,7 @@ import {
   ScrollView,
   TextInput,
 } from 'react-native';
-// import {TextInput} from 'react-native-paper';
+import {Portal, Modal} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import goals from '../../api/goals';
 import goalCategories from '../../api/goalCategories';
@@ -126,6 +126,11 @@ const SizedBox = ({height, width}) => {
 const EditActionItem = ({navigation, route}) => {
   const {actionItem, goal} = route.params;
   const [openStatus, setOpenStatus] = useState(false);
+  const showModal = () => setOpenStatus(true);
+  const hideModal = () => {
+    setOpenStatus(false);
+    navigation.navigate('Home');
+  };
   const [statusValue, setStatusValue] = useState(actionItem.status);
   const [statuses, setStatuses] = useState([
     {
@@ -306,14 +311,16 @@ const EditActionItem = ({navigation, route}) => {
       const editActionItem = await actionItems.updateActionItem(
         currentUser.token,
         {
-          goal: goalsValue[0],
+          goal: goalsValue,
           name: data.actionItem,
-          week: weekValue[0],
-          status: statusValue[0],
+          week: weekValue,
+          status: statusValue,
         },
         actionItem.id,
       );
-      navigation.navigate('Home');
+      if (statusValue === 'done') {
+        showModal();
+      }
     } catch (e) {
       console.log(e);
       Alert.alert(e.message);
@@ -330,6 +337,8 @@ const EditActionItem = ({navigation, route}) => {
   };
 
   const styles = useStyles();
+
+  console.log(goal, actionItem);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -528,6 +537,52 @@ const EditActionItem = ({navigation, route}) => {
                   </View>
                 </TouchableOpacity>
                 <SizedBox height={100} />
+                <Portal>
+                  <Modal
+                    visible={openStatus}
+                    onDismiss={hideModal}
+                    contentContainerStyle={{
+                      backgroundColor: 'white',
+                      alignSelf: 'center',
+                      height: '45%',
+                      width: '80%',
+                      padding: 20,
+                      borderRadius: 16,
+                    }}>
+                    <View
+                      style={{
+                        height: 25,
+                        width: 25,
+                        alignSelf: 'center',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#8DC63F',
+                        borderRadius: 16,
+                        marginRight: 12,
+                      }}>
+                      <Icon name="check" color="white" size={20} />
+                    </View>
+                    <SizedBox height={20} />
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontSize: 24,
+                        lineHeight: 32,
+                        fontWeight: '400',
+                        color: 'black',
+                      }}>
+                      Well Done!
+                    </Text>
+                    <SizedBox height={40} />
+                    <Text
+                      style={{color: 'black', fontSize: 14, lineHeight: 20}}>
+                      You’ve completed weekly action item. This brings you a
+                      step closer to achieveing your 12-Week goal. Create
+                      another weekly action item and continue working on your
+                      goal.
+                    </Text>
+                  </Modal>
+                </Portal>
               </View>
             </ScrollView>
           </KeyboardAvoidingView>

@@ -113,6 +113,8 @@ const Home = ({navigation}) => {
     );
   };
 
+  console.log(actionItemsData);
+
   return (
     <View style={{flex: 1, flexDirection: 'column'}}>
       <View
@@ -317,23 +319,23 @@ const Home = ({navigation}) => {
                           Weekly Action Items Completed{' '}
                           {actionItemsData.length
                             ? `${
-                                [...actionItemsData]
-                                  .filter(
-                                    actionItemData => actionItemData.length > 0,
-                                  )
+                                [...actionItemsData][index]
+                                  // .filter(
+                                  //   actionItemData => actionItemData.length > 0,
+                                  // )
                                   .filter(
                                     actionItemData =>
-                                      item.id === actionItemData[0].goalId &&
-                                      actionItemData[0].status === 'complete',
+                                      item.id === actionItemData.goalId &&
+                                      actionItemData.status === 'done',
                                   ).length
                               }/${
-                                [...actionItemsData]
-                                  .filter(
-                                    actionItemData => actionItemData.length > 0,
-                                  )
+                                [...actionItemsData][index]
+                                  // .filter(
+                                  //   actionItemData => actionItemData.length > 0,
+                                  // )
                                   .filter(
                                     actionItemData =>
-                                      item.id === actionItemData[0].goalId,
+                                      item.id === actionItemData.goalId,
                                   ).length
                               }`
                             : '0/0'}
@@ -544,7 +546,7 @@ const Home = ({navigation}) => {
                           borderWidth: 0.5,
                           borderColor: item !== null ? '#8DC63F' : null,
                           backgroundColor:
-                            item.status === 'Done'
+                            item.status === 'done'
                               ? '#8DC63F'
                               : item.status === 'inProgress'
                               ? '#FB9623'
@@ -562,8 +564,8 @@ const Home = ({navigation}) => {
                             item.status === 'toDo'
                               ? '#8DC63F'
                               : item.status === 'inProgress'
-                              ? 'white'
-                              : '#FB9623'
+                              ? '#FB9623'
+                              : 'white'
                           }
                         />
                       </View>
@@ -600,7 +602,7 @@ const Home = ({navigation}) => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         backgroundColor:
-                          item.status === 'Done'
+                          item.status === 'done'
                             ? '#8DC63F'
                             : item.status === 'inProgress'
                             ? '#FB9623'
@@ -608,7 +610,7 @@ const Home = ({navigation}) => {
                         borderRadius: 16,
                         marginRight: 12,
                       }}>
-                      {item.status === 'Done' ? (
+                      {item.status === 'done' ? (
                         <Icon name="check" color="white" size={20} />
                       ) : item.status === 'inProgress' ? (
                         <Icon

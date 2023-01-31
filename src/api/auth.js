@@ -1,7 +1,7 @@
 import axios from 'axios';
 import {BACK_URL} from '@env';
 
-console.log(BACK_URL);
+console.log(BACK_URL, 1);
 
 const auth = {
   login: async data => {
@@ -16,6 +16,12 @@ const auth = {
         Authorization: `Bearer ${token}`,
       },
     });
+  },
+  resetPassword: async body => {
+    return await axios.post(BACK_URL + '/api/auth/generate-password', body);
+  },
+  verifyEmail: async body => {
+    return await axios.put(BACK_URL + '/api/auth/verify-email', body);
   },
   getTwilioToken: async username => {
     return await axios.get(BACK_URL + `/token/${username}`);

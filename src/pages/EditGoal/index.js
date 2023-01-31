@@ -276,15 +276,20 @@ const EditGoalItem = ({navigation, route}) => {
   };
   const onSubmitEditing = async () => {
     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const newSuccessCriteria = await successCriteria.createSuccessCriteriaItem(
-      {criteria, goal: goal.id},
-      userData.token,
-    );
-    setCriteriaItems(current => [
-      ...current,
-      {successCriteria: criteria, value: criteria},
-    ]);
-    setCriteria('');
+    if (criteria) {
+      const newSuccessCriteria =
+        await successCriteria.createSuccessCriteriaItem(
+          {criteria, goal: goal.id},
+          userData.token,
+        );
+      setCriteriaItems(current => [
+        ...current,
+        {successCriteria: criteria, value: criteria},
+      ]);
+      setCriteria('');
+    } else {
+      Alert.alert('Cannot add emtpy value');
+    }
   };
   const handleClick = async data => {
     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
@@ -867,7 +872,7 @@ const EditGoalItem = ({navigation, route}) => {
                                         borderWidth:
                                           item.status === 'toDo' ? 1 : 0,
                                         backgroundColor:
-                                          item.status === 'Done'
+                                          item.status === 'done'
                                             ? '#8DC63F'
                                             : item.status === 'inProgress'
                                             ? '#FB9623'
@@ -882,8 +887,8 @@ const EditGoalItem = ({navigation, route}) => {
                                           item.status === 'toDo'
                                             ? '#8DC63F'
                                             : item.status === 'inProgress'
-                                            ? 'white'
-                                            : '#FB9623'
+                                            ? '#FB9623'
+                                            : 'white'
                                         }
                                         size={16}
                                       />
@@ -905,7 +910,7 @@ const EditGoalItem = ({navigation, route}) => {
                                       alignItems: 'center',
                                       justifyContent: 'center',
                                       backgroundColor:
-                                        item.status === 'Done'
+                                        item.status === 'done'
                                           ? '#8DC63F'
                                           : item.status === 'inProgress'
                                           ? '#FB9623'
@@ -913,7 +918,7 @@ const EditGoalItem = ({navigation, route}) => {
                                       borderRadius: 16,
                                       marginRight: 12,
                                     }}>
-                                    {item.status === 'Done' ? (
+                                    {item.status === 'done' ? (
                                       <Icon
                                         name="check"
                                         color="white"

@@ -155,8 +155,9 @@ const EditProfile = ({navigation, route}) => {
 
   const onSubmit = async data => {
     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const pictureData = new FormData();
-    pictureData.append('file', image.assets[0]);
+    console.log(data, 1111111);
+    // const pictureData = new FormData();
+    // pictureData.append('file', image.assets[0]);
     const update = await users.updateUser(
       {
         firstName: data.firstName,
@@ -164,7 +165,7 @@ const EditProfile = ({navigation, route}) => {
         phoneNumber: data.phoneNumber,
         email: data.email,
         bio: data.bio,
-        avatar: image.assets[0].uri,
+        avatar: image ? image.assets[0].uri : '',
       },
       userData.token,
       userData.email,
@@ -227,7 +228,7 @@ const EditProfile = ({navigation, route}) => {
                     style={{alignSelf: 'center'}}>
                     <Avatar.Image source={{uri: image.assets[0].uri}} />
                   </TouchableOpacity>
-                ) : user.avatar ? (
+                ) : user.avatar && user.avatar.length ? (
                   <TouchableOpacity
                     onPress={loadImage}
                     style={{alignSelf: 'center'}}>
@@ -257,7 +258,7 @@ const EditProfile = ({navigation, route}) => {
                     <Controller
                       control={control}
                       name="firstName"
-                      rules={{required: true}}
+                      // rules={{required: true}}
                       render={props => (
                         <TextInput
                           {...props}
@@ -305,7 +306,7 @@ const EditProfile = ({navigation, route}) => {
                     <Controller
                       control={control}
                       name="lastName"
-                      rules={{required: true}}
+                      // rules={{required: true}}
                       render={props => (
                         <TextInput
                           {...props}
@@ -415,7 +416,7 @@ const EditProfile = ({navigation, route}) => {
                       control={control}
                       name="email"
                       rules={{
-                        required: true,
+                        // required: true,
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                           message: 'Invalid email address',

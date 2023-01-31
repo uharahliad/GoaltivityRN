@@ -137,7 +137,7 @@ const ForgotPassword = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      createTwoButtonAlert(data.email);
+      await createTwoButtonAlert(data.email);
       reset();
     } catch (e) {
       console.log(e, e.code);
@@ -145,10 +145,12 @@ const ForgotPassword = ({navigation}) => {
     }
   };
 
-  const createTwoButtonAlert = email =>
+  const createTwoButtonAlert = async email => {
+    await auth.resetPassword({email});
     Alert.alert('Check Your Email', `We have sent an email to ${email}`, [
       {text: 'OK', onPress: () => console.log('OK Pressed')},
     ]);
+  };
 
   const styles = useStyles();
 
