@@ -139,9 +139,9 @@ const Survey = ({navigation}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.content}>
             <TypeformEmbed
-              originWhitelist={['*']}
+              useWebView2={true}
               url={link}
-              onSubmit={() => dispatch(setSignIn(true))}
+              onSubmit={() => navigation.navigate('SignIn')}
               hidden={{email: 'john@example.com'}}
             />
             {/* <Image

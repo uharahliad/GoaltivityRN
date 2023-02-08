@@ -82,7 +82,7 @@ function CustomNavigationBar({navigation}) {
 
   const deleteAccount = async () => {
     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteAcc = await users.deleteUser(userData.token, userData.email);
+    const deleteAcc = await users.deleteUser(userData.token, userData.id);
     if (deleteAcc.status === 200) {
       hideDialog();
       await EncryptedStorage.clear();
