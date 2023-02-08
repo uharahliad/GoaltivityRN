@@ -36,6 +36,7 @@ const UserProfile = ({navigation, route}) => {
             flex: 1,
             backgroundColor: 'white',
             alignItems: 'center',
+            paddingVertical: 50,
           }}>
           <View
             style={{

@@ -50,7 +50,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setSignIn} from './src/redux/reducers/signInSlice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import auth from './src/api/auth';
-import {Appbar, Menu, Dialog, Portal} from 'react-native-paper';
+import {Appbar, Menu, Dialog, Portal, Provider} from 'react-native-paper';
 import users from './src/api/users';
 
 import goals from './src/api/goals';
@@ -93,6 +93,7 @@ function CustomNavigationBar({navigation}) {
     }
   };
   return route.name === 'UserProfile' ? (
+    <Provider>
     <Appbar.Header style={{justifyContent: 'space-between'}}>
       <Appbar.BackAction onPress={() => navigation.goBack()} />
       <View>
@@ -152,6 +153,7 @@ function CustomNavigationBar({navigation}) {
         />
       </Menu>
     </Appbar.Header>
+    </Provider>
   ) : (
     <Appbar.Header style={{justifyContent: 'space-between'}}>
       <Appbar.BackAction onPress={() => navigation.goBack()} />
@@ -251,7 +253,7 @@ const TabNavigation = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <Image
-              source={require('D:/goals/Goaltivity/assets/PlusButton.png')}
+              source={require('./assets/PlusButton.png')}
               style={{width: 65, height: 65}}
             />
           ),

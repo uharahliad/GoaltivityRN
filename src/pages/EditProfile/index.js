@@ -39,7 +39,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -179,6 +179,7 @@ const EditProfile = ({navigation, route}) => {
       bio: update.data.bio,
       avatar: [{publicUrl: update.data.image}],
     };
+    console.log(update.data,'//////')
     await EncryptedStorage.setItem('user', JSON.stringify(newUserData));
     navigation.navigate('Home');
   };
