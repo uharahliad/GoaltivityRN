@@ -43,7 +43,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -153,6 +153,16 @@ const AddGoalItem = ({navigation}) => {
   const onSubmit = async data => {
     const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
+      console.log(data.goalName,
+        {name: value[0]},
+        criteriaItems,
+        currentUser.email,
+        data.award,
+        data.reason,
+        startDate,
+        endDate,
+        '0',
+        currentUser.token)
       const newGoal = await goals.createGoal(
         {
           data: {
@@ -196,7 +206,7 @@ const AddGoalItem = ({navigation}) => {
   const styles = useStyles();
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
         <SafeAreaView style={styles.safeAreaView}>
           <KeyboardAvoidingView
@@ -415,7 +425,7 @@ const AddGoalItem = ({navigation}) => {
                     marginBottom: 8,
                     fontSize: 22,
                     lineHeight: 28,
-                    fontWeight: '510',
+                    fontWeight: '500',
                     color: '#3C3939',
                   }}>
                   Why must I complete this goal?
@@ -483,7 +493,7 @@ const AddGoalItem = ({navigation}) => {
                           placeholder="I must complete this goal..."
                           placeholderTextColor="#797776"
                           autoCapitalize="none"
-                          autoCompleteType="password"
+                          // autoCompleteType="password"
                           autoCorrect={false}
                           onChangeText={text => props.field.onChange(text)}
                           underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
@@ -525,7 +535,7 @@ const AddGoalItem = ({navigation}) => {
                       placeholder="Set Success Criteria"
                       placeholderTextColor="#797776"
                       autoCapitalize="none"
-                      autoCompleteType="password"
+                      // autoCompleteType="password"
                       autoCorrect={false}
                       onChangeText={text => setCriteria(text)}
                       underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
@@ -573,7 +583,7 @@ const AddGoalItem = ({navigation}) => {
                     marginBottom: 8,
                     fontSize: 22,
                     lineHeight: 28,
-                    fontWeight: '510',
+                    fontWeight: '500',
                     color: '#1F1C1B',
                   }}>
                   Award for completing this goal
@@ -640,7 +650,7 @@ const AddGoalItem = ({navigation}) => {
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
-    </TouchableWithoutFeedback>
+    // </TouchableWithoutFeedback>
   );
 };
 

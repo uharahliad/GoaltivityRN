@@ -44,7 +44,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -341,7 +341,7 @@ const EditActionItem = ({navigation, route}) => {
   console.log(goal, actionItem);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
         <SafeAreaView style={styles.safeAreaView}>
           <KeyboardAvoidingView
@@ -588,7 +588,7 @@ const EditActionItem = ({navigation, route}) => {
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
-    </TouchableWithoutFeedback>
+    // </TouchableWithoutFeedback>
   );
 };
 

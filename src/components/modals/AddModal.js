@@ -27,7 +27,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -140,7 +140,7 @@ const AddModal = ({navigation}) => {
             fontSize: 16,
             lineHeight: 24,
             color: '#1D2E54',
-            fontWeight: '510',
+            fontWeight: '500',
           }}>
           Create new
         </Text>
@@ -161,7 +161,7 @@ const AddModal = ({navigation}) => {
               style={{
                 color: '#FFFFFF',
                 fontSize: 14,
-                fontWeight: '510',
+                fontWeight: '500',
                 lineHeight: 20,
               }}>
               Weekly action item
@@ -187,7 +187,7 @@ const AddModal = ({navigation}) => {
             style={{
               color: data && data.length > 0 ? '#1D2E54' : '#FFFFFF',
               fontSize: 14,
-              fontWeight: '510',
+              fontWeight: '500',
               lineHeight: 20,
             }}>
             {data && data.length > 0 ? null : 'Create'} 12 week goal
