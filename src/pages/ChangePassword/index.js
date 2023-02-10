@@ -128,7 +128,7 @@ const ChangePassword = ({navigation}) => {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
 
-  const {control, handleSubmit, formState, getFieldState, reset} = useForm({
+  const {control, handleSubmit, formState, getValues, reset} = useForm({
     // defaultValues: {
     //   email: '',
     // },
@@ -137,22 +137,18 @@ const ChangePassword = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      await createTwoButtonAlert(data.email);
-      reset();
+      console.log('SUBMIT DATA: ', data);
     } catch (e) {
       console.log(e, e.code);
       Alert.alert('Invalid credentials, try again');
     }
   };
 
-  const createTwoButtonAlert = async email => {
-    await auth.resetPassword({email});
-    Alert.alert('Check Your Email', `We have sent an email to ${email}`, [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ]);
-  };
-
   const styles = useStyles();
+
+  const isActive =
+    getValues('old_password')?.length >= 6 &&
+    getValues('new_password')?.length >= 6;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -165,39 +161,30 @@ const ChangePassword = ({navigation}) => {
 
             <SizedBox height={30} />
 
-            <Text style={styles.subtitle}>
-              Enter your email address to receive a link to reset your password
-            </Text>
-
-            <SizedBox height={50} />
-
             <Pressable onPress={target => target.current?.focus()}>
               <View>
                 <Controller
                   control={control}
-                  name="email"
+                  name="old_password"
                   rules={{
                     required: true,
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address',
-                    },
+                    minLength: 6,
                   }}
                   render={props => (
                     <TextInput
                       {...props}
-                      label="Email Address"
-                      placeholder="Add Email Address"
+                      label="Old Password"
+                      placeholder="Password must be 6 characters long"
                       placeholderTextColor="#1D2E54"
                       autoCapitalize="none"
-                      autoCompleteType="email"
+                      autoCompleteType="password"
                       autoCorrect={false}
-                      keyboardType="email-address"
+                      onChangeText={text => props.field.onChange(text)}
+                      secureTextEntry
                       underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
                       activeUnderlineColor="#1D2E54"
                       mode="flat"
-                      onChangeText={text => props.field.onChange(text)}
-                      textContentType="username"
+                      textContentType="password"
                       style={{
                         backgroundColor:
                           '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
@@ -209,37 +196,67 @@ const ChangePassword = ({navigation}) => {
                 />
               </View>
             </Pressable>
-            {formState.errors.email?.message && (
+            {formState.errors.old_password?.message && (
               <Text style={{marginLeft: 15, color: 'red'}}>
-                {formState.errors.email.message}
+                {formState.errors.old_password.message}
+              </Text>
+            )}
+
+            <SizedBox height={30} />
+
+            <Pressable onPress={target => target.current?.focus()}>
+              <View>
+                <Controller
+                  control={control}
+                  name="new_password"
+                  rules={{
+                    required: true,
+                    minLength: 6,
+                  }}
+                  render={props => (
+                    <TextInput
+                      {...props}
+                      label="New Password"
+                      placeholder="Password must be 6 characters long"
+                      placeholderTextColor="#1D2E54"
+                      autoCapitalize="none"
+                      autoCompleteType="password"
+                      autoCorrect={false}
+                      onChangeText={text => props.field.onChange(text)}
+                      secureTextEntry
+                      underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                      activeUnderlineColor="#1D2E54"
+                      mode="flat"
+                      textContentType="password"
+                      style={{
+                        backgroundColor:
+                          '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                        borderColor: '#1D2E54',
+                        borderRadius: 8,
+                      }}
+                    />
+                  )}
+                />
+              </View>
+            </Pressable>
+            {formState.errors.new_password?.message && (
+              <Text style={{marginLeft: 15, color: 'red'}}>
+                {formState.errors.new_password.message}
               </Text>
             )}
 
             <SizedBox height={250} />
 
-            <TouchableOpacity
-              onPress={handleSubmit(onSubmit)}
-              disabled={getFieldState('email').invalid !== true ? false : true}>
-              <View
-                style={
-                  getFieldState('email').invalid !== true
-                    ? styles.button
-                    : styles.disabledButton
-                }>
+            <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+              <View style={isActive ? styles.button : styles.disabledButton}>
                 <Text
                   style={
-                    getFieldState('email').invalid !== true
-                      ? styles.buttonTitle
-                      : styles.disabledButtonTitle
+                    isActive ? styles.buttonTitle : styles.disabledButtonTitle
                   }>
-                  Send Email
+                  Submit
                 </Text>
               </View>
             </TouchableOpacity>
-            <SizedBox height={16} />
-            <View style={styles.forgotPasswordContainer}>
-              <Text style={styles.textButton}>back to </Text>
-            </View>
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>

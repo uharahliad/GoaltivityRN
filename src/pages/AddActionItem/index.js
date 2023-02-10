@@ -314,12 +314,21 @@ const AddActionItem = ({navigation}) => {
 
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+<<<<<<< HEAD
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           style={styles.content}>
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
+=======
+      <View style={styles.root}>
+        <SafeAreaView style={styles.safeAreaView}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.content}>
+            <ScrollView contentContainerStyle={{flexGrow: 1}}>
+>>>>>>> 06b541fdc2faf856889cbf93cee2645b851b8a61
             <TouchableOpacity
               onPress={() => navigation.navigate('Home')}
               style={{position: 'absolute', top: 10, right: 10}}>
@@ -471,10 +480,17 @@ const AddActionItem = ({navigation}) => {
               <SizedBox height={40} />
               {Platform.OS === 'ios' ? <SizedBox height={130} /> : null}
             </View>
+<<<<<<< HEAD
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
+=======
+            </ScrollView>
+          </KeyboardAvoidingView>
+        </SafeAreaView>
+      </View>
+>>>>>>> 06b541fdc2faf856889cbf93cee2645b851b8a61
     // </TouchableWithoutFeedback>
   );
 };
