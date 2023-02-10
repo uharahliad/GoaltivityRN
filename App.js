@@ -19,6 +19,7 @@ import {
   Image,
   Alert,
   Linking,
+  Platform,
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import {NavigationContainer, useRoute} from '@react-navigation/native';
@@ -68,6 +69,10 @@ const PlusButton = ({children, onPress}) => {
   );
 };
 
+const ConditionalWrapper = ({children}) => {
+  return Platform.OS === 'ios' ? <Provider>{children}</Provider> : children;
+};
+
 function CustomNavigationBar({navigation}) {
   const route = useRoute();
   const [visible, setVisible] = React.useState(false);
@@ -93,67 +98,71 @@ function CustomNavigationBar({navigation}) {
     }
   };
   return route.name === 'UserProfile' ? (
-    <Provider>
-    <Appbar.Header style={{justifyContent: 'space-between'}}>
-      <Appbar.BackAction onPress={() => navigation.goBack()} />
-      <View>
-        <Portal>
-          <Dialog visible={deleteVisible} onDismiss={hideDialog}>
-            <Dialog.Title>
-              Are you sure you want to delete your account
-            </Dialog.Title>
-            <Dialog.Actions style={{alignItems: 'center'}}>
-              <TouchableOpacity onPress={deleteAccount}>
-                <Text style={{color: '#1D2E54', fontSize: 16, lineHeight: 24}}>
-                  Yes
-                </Text>
-              </TouchableOpacity>
-              <View style={{width: 40}} />
-              <TouchableOpacity onPress={hideDialog}>
-                <Text style={{color: '#1D2E54', fontSize: 16, lineHeight: 24}}>
-                  No
-                </Text>
-              </TouchableOpacity>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </View>
-      <Menu
-        visible={visible}
-        onDismiss={closeMenu}
-        anchor={<Appbar.Action onPress={openMenu} icon="dots-vertical" />}>
-        <Menu.Item
-          onPress={async () => {
-            closeMenu();
-            const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-            navigation.navigate('EditProfile', {user: userData});
-          }}
-          title="Edit Profile"
-        />
-        <Menu.Item
-          onPress={() => {
-            closeMenu();
-            navigation.navigate('ChangePassword');
-          }}
-          title="Change Password"
-        />
-        <Menu.Item
-          onPress={() => {
-            closeMenu();
-            showDialog();
-          }}
-          title="Delete Account"
-        />
-        <Menu.Item
-          onPress={async () => {
-            await EncryptedStorage.clear();
-            dispatch(setSignIn(false));
-          }}
-          title="Log Out"
-        />
-      </Menu>
-    </Appbar.Header>
-    </Provider>
+    <ConditionalWrapper>
+      <Appbar.Header style={{justifyContent: 'space-between'}}>
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
+        <View>
+          <Portal>
+            <Dialog visible={deleteVisible} onDismiss={hideDialog}>
+              <Dialog.Title>
+                Are you sure you want to delete your account
+              </Dialog.Title>
+              <Dialog.Actions style={{alignItems: 'center'}}>
+                <TouchableOpacity onPress={deleteAccount}>
+                  <Text
+                    style={{color: '#1D2E54', fontSize: 16, lineHeight: 24}}>
+                    Yes
+                  </Text>
+                </TouchableOpacity>
+                <View style={{width: 40}} />
+                <TouchableOpacity onPress={hideDialog}>
+                  <Text
+                    style={{color: '#1D2E54', fontSize: 16, lineHeight: 24}}>
+                    No
+                  </Text>
+                </TouchableOpacity>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        </View>
+        <Menu
+          visible={visible}
+          onDismiss={closeMenu}
+          anchor={<Appbar.Action onPress={openMenu} icon="dots-vertical" />}>
+          <Menu.Item
+            onPress={async () => {
+              closeMenu();
+              const userData = JSON.parse(
+                await EncryptedStorage.getItem('user'),
+              );
+              navigation.navigate('EditProfile', {user: userData});
+            }}
+            title="Edit Profile"
+          />
+          <Menu.Item
+            onPress={() => {
+              closeMenu();
+              navigation.navigate('ChangePassword');
+            }}
+            title="Change Password"
+          />
+          <Menu.Item
+            onPress={() => {
+              closeMenu();
+              showDialog();
+            }}
+            title="Delete Account"
+          />
+          <Menu.Item
+            onPress={async () => {
+              await EncryptedStorage.clear();
+              dispatch(setSignIn(false));
+            }}
+            title="Log Out"
+          />
+        </Menu>
+      </Appbar.Header>
+    </ConditionalWrapper>
   ) : (
     <Appbar.Header style={{justifyContent: 'space-between'}}>
       <Appbar.BackAction onPress={() => navigation.goBack()} />
