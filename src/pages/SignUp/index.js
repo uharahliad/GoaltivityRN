@@ -32,7 +32,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {

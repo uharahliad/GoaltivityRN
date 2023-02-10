@@ -33,7 +33,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -94,7 +94,7 @@ function useStyles() {
     loginButtonText: {
       color: '#8DC63F',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     // logo: {
@@ -115,13 +115,14 @@ const Survey = ({navigation}) => {
   const styles = useStyles();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      setUser(userData);
-    };
-    getUser();
-  }, []);
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+  //     console.log(userData)
+  //     setUser(userData);
+  //   };
+  //   getUser();
+  // }, []);
 
   useEffect(() => {
     if (user !== null) {
@@ -139,9 +140,9 @@ const Survey = ({navigation}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.content}>
             <TypeformEmbed
-              originWhitelist={['*']}
+              useWebView2={true}
               url={link}
-              onSubmit={() => dispatch(setSignIn(true))}
+              onSubmit={() => navigation.navigate('SignIn')}
               hidden={{email: 'john@example.com'}}
             />
             {/* <Image

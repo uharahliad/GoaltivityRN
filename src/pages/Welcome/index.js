@@ -28,7 +28,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -89,7 +89,7 @@ function useStyles() {
     loginButtonText: {
       color: '#8DC63F',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     // logo: {
@@ -116,7 +116,7 @@ const Welcome = ({navigation}) => {
             style={styles.content}>
             <Image
               style={styles.logo}
-              source={require('D:/goals/Goaltivity/assets/BrandStyleGuide_Goaltivity.png')}
+              source={require('../../../assets/BrandStyleGuide_Goaltivity.png')}
             />
             <SizedBox height={Dimensions.get('screen').height * 0.04} />
             <View style={{flexDirection: 'row'}}>

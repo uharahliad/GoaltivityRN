@@ -39,7 +39,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -177,8 +177,9 @@ const EditProfile = ({navigation, route}) => {
       phoneNumber: update.data.phoneNumber,
       email: update.data.email,
       bio: update.data.bio,
-      avatar: update.data.image,
+      avatar: [{publicUrl: update.data.image}],
     };
+    console.log(update.data,'//////')
     await EncryptedStorage.setItem('user', JSON.stringify(newUserData));
     navigation.navigate('Home');
   };
@@ -232,7 +233,7 @@ const EditProfile = ({navigation, route}) => {
                   <TouchableOpacity
                     onPress={loadImage}
                     style={{alignSelf: 'center'}}>
-                    <Avatar.Image source={{uri: user.avatar}} />
+                    <Avatar.Image source={{uri: user.avatar[0].publicUrl}} />
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity

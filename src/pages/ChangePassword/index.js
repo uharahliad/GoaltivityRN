@@ -39,13 +39,13 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     disabledButtonTitle: {
       color: 'grey',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -109,7 +109,7 @@ function useStyles() {
     loginButtonText: {
       color: '#8DC63F',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     // logo: {

@@ -46,7 +46,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -322,7 +322,7 @@ const EditGoalItem = ({navigation, route}) => {
   const styles = useStyles();
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.root}>
         <SafeAreaView style={styles.safeAreaView}>
           <KeyboardAvoidingView
@@ -609,7 +609,7 @@ const EditGoalItem = ({navigation, route}) => {
                         marginBottom: 8,
                         fontSize: 22,
                         lineHeight: 28,
-                        fontWeight: '510',
+                        fontWeight: '500',
                         color: '#3C3939',
                       }}>
                       Why must I complete this goal?
@@ -718,7 +718,7 @@ const EditGoalItem = ({navigation, route}) => {
                         marginBottom: 8,
                         fontSize: 22,
                         lineHeight: 28,
-                        fontWeight: '510',
+                        fontWeight: '500',
                         color: '#1F1C1B',
                       }}>
                       Award for completing this goal
@@ -804,7 +804,7 @@ const EditGoalItem = ({navigation, route}) => {
                               style={{
                                 padding: 10,
                                 marginLeft: 10,
-                                fontWeight: '510',
+                                fontWeight: '500',
                                 fontSize: 16,
                                 lineHeight: 24,
                                 color: '#1F1C1B',
@@ -816,7 +816,7 @@ const EditGoalItem = ({navigation, route}) => {
                                 alignSelf: 'center',
                                 padding: 10,
                                 marginLeft: 10,
-                                fontWeight: '510',
+                                fontWeight: '500',
                                 fontSize: 11,
                                 lineHeight: 16,
                                 color: '#797776',
@@ -961,7 +961,7 @@ const EditGoalItem = ({navigation, route}) => {
                               style={{
                                 padding: 10,
                                 marginLeft: 10,
-                                fontWeight: '510',
+                                fontWeight: '500',
                                 fontSize: 16,
                                 lineHeight: 24,
                                 color: '#1F1C1B',
@@ -973,7 +973,7 @@ const EditGoalItem = ({navigation, route}) => {
                                 alignSelf: 'center',
                                 padding: 10,
                                 marginLeft: 10,
-                                fontWeight: '510',
+                                fontWeight: '500',
                                 fontSize: 11,
                                 lineHeight: 16,
                                 color: '#797776',
@@ -1088,7 +1088,7 @@ const EditGoalItem = ({navigation, route}) => {
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>
-    </TouchableWithoutFeedback>
+    // </TouchableWithoutFeedback>
   );
 };
 

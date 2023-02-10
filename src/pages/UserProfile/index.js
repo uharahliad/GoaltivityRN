@@ -36,6 +36,7 @@ const UserProfile = ({navigation, route}) => {
             flex: 1,
             backgroundColor: 'white',
             alignItems: 'center',
+            paddingVertical: 50,
           }}>
           <View
             style={{
@@ -54,7 +55,7 @@ const UserProfile = ({navigation, route}) => {
                 marginLeft: 15,
               }}>
               {user.avatar && user.avatar.length ? (
-                <Avatar.Image source={{uri: user.avatar}} />
+                <Avatar.Image source={{uri: user.avatar[0].publicUrl}} />
               ) : (
                 <Avatar.Text
                   style={{

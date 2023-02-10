@@ -135,7 +135,7 @@ const Home = ({navigation}) => {
                 alignSelf: 'center',
                 fontSize: 22,
                 lineHeight: 28,
-                fontWeight: '510',
+                fontWeight: '500',
                 color: '#1D2E54',
               }}>
               Hello, {user !== null ? user.firstName : null}
@@ -156,7 +156,7 @@ const Home = ({navigation}) => {
               alignSelf: 'center',
               fontSize: 16,
               lineHeight: 24,
-              fontWeight: '510',
+              fontWeight: '500',
               color: '#1D2E54',
               marginLeft: 10,
             }}>
@@ -312,7 +312,7 @@ const Home = ({navigation}) => {
                             textAlign: 'center',
                             lineHeight: 16,
                             fontSize: 11,
-                            fontWeight: '510',
+                            fontWeight: '500',
                             color: '#797776',
                           }}>
                           {' '}
@@ -354,7 +354,7 @@ const Home = ({navigation}) => {
                             textAlign: 'center',
                             lineHeight: 16,
                             fontSize: 11,
-                            fontWeight: '510',
+                            fontWeight: '500',
                             color: '#797776',
                           }}>
                           {' '}
@@ -575,7 +575,7 @@ const Home = ({navigation}) => {
                             fontSize: 14,
                             lineHeight: 20,
                             color: '#3C3939',
-                            fontWeight: '510',
+                            fontWeight: '500',
                           }}>
                           {item !== null
                             ? item.name
@@ -673,7 +673,7 @@ const Home = ({navigation}) => {
                           fontSize: 14,
                           lineHeight: 20,
                           color: '#3C3939',
-                          fontWeight: '510',
+                          fontWeight: '500',
                         }}>
                         Create weekly action item
                       </Text>

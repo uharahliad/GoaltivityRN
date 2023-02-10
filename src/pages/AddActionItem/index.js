@@ -12,6 +12,7 @@ import {
   TouchableWithoutFeedback,
   View,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
@@ -42,7 +43,7 @@ function useStyles() {
     buttonTitle: {
       color: '#FFFFFF',
       fontSize: 14,
-      fontWeight: '510',
+      fontWeight: '500',
       lineHeight: 20,
     },
     content: {
@@ -312,12 +313,13 @@ const AddActionItem = ({navigation}) => {
   const styles = useStyles();
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.root}>
-        <SafeAreaView style={styles.safeAreaView}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.content}>
+    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <View style={styles.root}>
+      <SafeAreaView style={styles.safeAreaView}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.content}>
+          <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <TouchableOpacity
               onPress={() => navigation.navigate('Home')}
               style={{position: 'absolute', top: 10, right: 10}}>
@@ -458,7 +460,6 @@ const AddActionItem = ({navigation}) => {
                   </Picker>
                 </>
               ) : null}
-
               <SizedBox height={130} />
               <TouchableOpacity
                 style={{flex: 1}}
@@ -468,11 +469,13 @@ const AddActionItem = ({navigation}) => {
                 </View>
               </TouchableOpacity>
               <SizedBox height={40} />
+              {Platform.OS === 'ios' ? <SizedBox height={130} /> : null}
             </View>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </View>
-    </TouchableWithoutFeedback>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
+    // </TouchableWithoutFeedback>
   );
 };
 
