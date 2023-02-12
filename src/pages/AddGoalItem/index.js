@@ -153,7 +153,8 @@ const AddGoalItem = ({navigation}) => {
   const onSubmit = async data => {
     const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      console.log(data.goalName,
+      console.log(
+        data.goalName,
         {name: value[0]},
         criteriaItems,
         currentUser.email,
@@ -162,7 +163,8 @@ const AddGoalItem = ({navigation}) => {
         startDate,
         endDate,
         '0',
-        currentUser.token)
+        currentUser.token,
+      );
       const newGoal = await goals.createGoal(
         {
           data: {
@@ -207,231 +209,231 @@ const AddGoalItem = ({navigation}) => {
 
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.root}>
-        <SafeAreaView style={styles.safeAreaView}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.content}>
-            <ScrollView>
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Home')}
-                style={{position: 'absolute', top: 10, right: 10}}>
-                <Icon name="close" size={23} />
-              </TouchableOpacity>
+    <View style={styles.root}>
+      <SafeAreaView style={styles.safeAreaView}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.content}>
+          <ScrollView>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Home')}
+              style={{position: 'absolute', top: 10, right: 10}}>
+              <Icon name="close" size={23} />
+            </TouchableOpacity>
+            <Text
+              style={{
+                top: 40,
+                left: 10,
+                fontSize: 24,
+                lineHeight: 32,
+                fontWeight: '400',
+                color: '#1D2E54',
+              }}>
+              Create 12-Week Goal
+            </Text>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                top: 60,
+              }}>
+              <SizedBox height={20} />
               <Text
                 style={{
-                  top: 40,
-                  left: 10,
-                  fontSize: 24,
-                  lineHeight: 32,
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
                   fontWeight: '400',
-                  color: '#1D2E54',
+                  marginBottom: 8,
                 }}>
-                Create 12-Week Goal
+                Goal Name
               </Text>
+              <Pressable onPress={target => target.current?.focus()}>
+                <View>
+                  <Controller
+                    control={control}
+                    name="goalName"
+                    rules={{required: true}}
+                    render={props => (
+                      <TextInput
+                        {...props}
+                        // label="Goal Name"
+                        placeholder="Type Goal Name"
+                        placeholderTextColor="#797776"
+                        autoCapitalize="none"
+                        autoCompleteType="email"
+                        autoCorrect={false}
+                        keyboardType="email-address"
+                        underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                        activeUnderlineColor="#797776"
+                        mode="flat"
+                        onChangeText={text => props.field.onChange(text)}
+                        textContentType="username"
+                        style={{
+                          backgroundColor:
+                            '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                          borderColor: '#1D2E54',
+                          borderRadius: 4,
+                          width: '90%',
+                          alignSelf: 'center',
+                          padding: 10,
+                        }}
+                      />
+                    )}
+                  />
+                </View>
+              </Pressable>
+              <SizedBox height={20} />
               <View
                 style={{
-                  flex: 1,
-                  backgroundColor: 'white',
-                  top: 60,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
                 }}>
-                <SizedBox height={20} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 8,
-                  }}>
-                  Goal Name
-                </Text>
                 <Pressable onPress={target => target.current?.focus()}>
-                  <View>
-                    <Controller
-                      control={control}
-                      name="goalName"
-                      rules={{required: true}}
-                      render={props => (
-                        <TextInput
-                          {...props}
-                          // label="Goal Name"
-                          placeholder="Type Goal Name"
-                          placeholderTextColor="#797776"
-                          autoCapitalize="none"
-                          autoCompleteType="email"
-                          autoCorrect={false}
-                          keyboardType="email-address"
-                          underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                          activeUnderlineColor="#797776"
-                          mode="flat"
-                          onChangeText={text => props.field.onChange(text)}
-                          textContentType="username"
-                          style={{
-                            backgroundColor:
-                              '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                            borderColor: '#1D2E54',
-                            borderRadius: 4,
-                            width: '90%',
-                            alignSelf: 'center',
-                            padding: 10,
-                          }}
-                        />
-                      )}
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      // justifyContent: 'space-around',
+                      alignItems: 'center',
+                      backgroundColor:
+                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                      borderRadius: 4,
+                      marginLeft: 13,
+                    }}>
+                    <TextInput
+                      value={startDate.toLocaleDateString()}
+                      editable={false}
+                      // label="Start Date"
+                      placeholder="Add Start Date"
+                      placeholderTextColor="#1D2E54"
+                      autoCapitalize="none"
+                      autoCompleteType="firstName"
+                      autoCorrect={false}
+                      keyboardType="email-address"
+                      // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                      // activeUnderlineColor="#797776"
+                      // mode="outlined"
+                      onChange={e => setStartDate(e.target.value)}
+                      textContentType="date"
+                      style={{
+                        fontSize: 16,
+                        lineHeight: 24,
+                        marginLeft: 10,
+                        // backgroundColor:
+                        //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                        // borderColor: '#1D2E54',
+                        width: 120,
+                      }}
                     />
+                    <TouchableOpacity
+                      onPress={() => setDateOpen(true)}
+                      style={{
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        marginRight: 10,
+                      }}>
+                      <Icon name="date-range" size={30} />
+                    </TouchableOpacity>
                   </View>
                 </Pressable>
                 <SizedBox height={20} />
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                  }}>
-                  <Pressable onPress={target => target.current?.focus()}>
-                    <View
+                <Pressable onPress={target => target.current?.focus()}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      alignItems: 'center',
+                      backgroundColor:
+                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                      borderRadius: 4,
+                      marginRight: 13,
+                    }}>
+                    <TextInput
+                      value={
+                        endDate !== null ? endDate.toLocaleDateString() : ''
+                      }
+                      editable={false}
+                      // label="End Date"
+                      placeholder="Add End Date"
+                      placeholderTextColor="#1D2E54"
+                      autoCapitalize="none"
+                      autoCompleteType="secondName"
+                      autoCorrect={false}
+                      keyboardType="numeric"
+                      // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                      // activeUnderlineColor="#797776"
+                      mode="flat"
+                      textContentType="username"
                       style={{
-                        flexDirection: 'row',
-                        // justifyContent: 'space-around',
-                        alignItems: 'center',
-                        backgroundColor:
-                          '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        borderRadius: 4,
-                        marginLeft: 13,
-                      }}>
-                      <TextInput
-                        value={startDate.toLocaleDateString()}
-                        editable={false}
-                        // label="Start Date"
-                        placeholder="Add Start Date"
-                        placeholderTextColor="#1D2E54"
-                        autoCapitalize="none"
-                        autoCompleteType="firstName"
-                        autoCorrect={false}
-                        keyboardType="email-address"
-                        // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                        // activeUnderlineColor="#797776"
-                        // mode="outlined"
-                        onChange={e => setStartDate(e.target.value)}
-                        textContentType="date"
-                        style={{
-                          fontSize: 16,
-                          lineHeight: 24,
-                          marginLeft: 10,
-                          // backgroundColor:
-                          //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                          // borderColor: '#1D2E54',
-                          width: 120,
-                        }}
-                      />
-                      <TouchableOpacity
-                        onPress={() => setDateOpen(true)}
-                        style={{
-                          justifyContent: 'center',
-                          alignSelf: 'center',
-                          marginRight: 10,
-                        }}>
-                        <Icon name="date-range" size={30} />
-                      </TouchableOpacity>
-                    </View>
-                  </Pressable>
-                  <SizedBox height={20} />
-                  <Pressable onPress={target => target.current?.focus()}>
-                    <View
+                        fontSize: 16,
+                        lineHeight: 24,
+                        marginLeft: 10,
+                        // backgroundColor:
+                        //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                        // borderColor: '#1D2E54',
+                        // borderRadius: 4,
+                        width: 120,
+                      }}
+                    />
+                    <TouchableOpacity
                       style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        alignItems: 'center',
-                        backgroundColor:
-                          '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        borderRadius: 4,
-                        marginRight: 13,
+                        justifyContent: 'center',
+                        alignSelf: 'center',
+                        marginRight: 10,
                       }}>
-                      <TextInput
-                        value={
-                          endDate !== null ? endDate.toLocaleDateString() : ''
-                        }
-                        editable={false}
-                        // label="End Date"
-                        placeholder="Add End Date"
-                        placeholderTextColor="#1D2E54"
-                        autoCapitalize="none"
-                        autoCompleteType="secondName"
-                        autoCorrect={false}
-                        keyboardType="numeric"
-                        // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                        // activeUnderlineColor="#797776"
-                        mode="flat"
-                        textContentType="username"
-                        style={{
-                          fontSize: 16,
-                          lineHeight: 24,
-                          marginLeft: 10,
-                          // backgroundColor:
-                          //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                          // borderColor: '#1D2E54',
-                          // borderRadius: 4,
-                          width: 120,
-                        }}
-                      />
-                      <TouchableOpacity
-                        style={{
-                          justifyContent: 'center',
-                          alignSelf: 'center',
-                          marginRight: 10,
-                        }}>
-                        <Icon name="date-range" size={30} />
-                      </TouchableOpacity>
-                    </View>
-                  </Pressable>
-                </View>
-                <SizedBox height={20} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 8,
-                  }}>
-                  Category
-                </Text>
-                <Picker
-                  selectedValue={value}
-                  onValueChange={(itemValue, itemIndex) => setValue(itemValue)}
-                  style={{
-                    backgroundColor:
-                      '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                    borderColor: '#1D2E54',
-                    borderRadius: 4,
-                    width: '90%',
-                    alignSelf: 'center',
-                  }}>
-                  {items.length &&
-                    items.map((item, i) => (
-                      <Picker.Item
-                        color="#797776"
-                        key={i}
-                        label={item.label}
-                        value={item.value}
-                      />
-                    ))}
-                </Picker>
-                <SizedBox height={20} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    marginBottom: 8,
-                    fontSize: 22,
-                    lineHeight: 28,
-                    fontWeight: '500',
-                    color: '#3C3939',
-                  }}>
-                  Why must I complete this goal?
-                </Text>
+                      <Icon name="date-range" size={30} />
+                    </TouchableOpacity>
+                  </View>
+                </Pressable>
+              </View>
+              <SizedBox height={20} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
+                  fontWeight: '400',
+                  marginBottom: 8,
+                }}>
+                Category
+              </Text>
+              <Picker
+                selectedValue={value}
+                onValueChange={(itemValue, itemIndex) => setValue(itemValue)}
+                style={{
+                  backgroundColor:
+                    '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                  borderColor: '#1D2E54',
+                  borderRadius: 4,
+                  width: '90%',
+                  alignSelf: 'center',
+                }}>
+                {items.length &&
+                  items.map((item, i) => (
+                    <Picker.Item
+                      color="#797776"
+                      key={i}
+                      label={item.label}
+                      value={item.value}
+                    />
+                  ))}
+              </Picker>
+              <SizedBox height={20} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  marginBottom: 8,
+                  fontSize: 22,
+                  lineHeight: 28,
+                  fontWeight: '500',
+                  color: '#3C3939',
+                }}>
+                Why must I complete this goal?
+              </Text>
 
-                {/* <DropDownPicker
+              {/* <DropDownPicker
                 open={open}
                 value={value}
                 items={items}
@@ -442,7 +444,7 @@ const AddGoalItem = ({navigation}) => {
                 mode="BADGE"
                 max={1}
               /> */}
-                {/* <Pressable onPress={target => target.current?.focus()}>
+              {/* <Pressable onPress={target => target.current?.focus()}>
               <View>
                 <Controller
                   control={control}
@@ -480,176 +482,176 @@ const AddGoalItem = ({navigation}) => {
                 />
               </View>
             </Pressable> */}
-                <Pressable onPress={target => target.current?.focus()}>
-                  <View>
-                    <Controller
-                      control={control}
-                      rules={{required: true}}
-                      name="reason"
-                      render={props => (
-                        <TextInput
-                          {...props}
-                          // label="I must complete this goal..."
-                          placeholder="I must complete this goal..."
-                          placeholderTextColor="#797776"
-                          autoCapitalize="none"
-                          // autoCompleteType="password"
-                          autoCorrect={false}
-                          onChangeText={text => props.field.onChange(text)}
-                          underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                          activeUnderlineColor="#797776"
-                          mode="flat"
-                          textContentType="password"
-                          style={{
-                            backgroundColor:
-                              '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                            borderColor: '#1D2E54',
-                            borderRadius: 4,
-                            width: '90%',
-                            alignSelf: 'center',
-                            padding: 10,
-                          }}
-                        />
-                      )}
-                    />
-                  </View>
-                </Pressable>
-
-                <SizedBox height={20} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    marginBottom: 8,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                  }}>
-                  {'Success Criteria(optional)'}
-                </Text>
-
-                <Pressable onPress={target => target.current?.focus()}>
-                  <View>
-                    <TextInput
-                      // label="Success Criteria"
-                      placeholder="Set Success Criteria"
-                      placeholderTextColor="#797776"
-                      autoCapitalize="none"
-                      // autoCompleteType="password"
-                      autoCorrect={false}
-                      onChangeText={text => setCriteria(text)}
-                      underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                      activeUnderlineColor="#797776"
-                      mode="flat"
-                      value={criteria}
-                      onSubmitEditing={() => onSubmitEditing()}
-                      textContentType="password"
-                      style={{
-                        backgroundColor:
-                          '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        borderColor: '#1D2E54',
-                        borderRadius: 4,
-                        width: '90%',
-                        alignSelf: 'center',
-                        padding: 10,
-                      }}
-                    />
-                  </View>
-                </Pressable>
-                <SizedBox height={5} />
-                <View style={{flexDirection: 'row'}}>
-                  {!!criteriaItems &&
-                    criteriaItems.map((item, i) => (
-                      <View
-                        key={i}
+              <Pressable onPress={target => target.current?.focus()}>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{required: true}}
+                    name="reason"
+                    render={props => (
+                      <TextInput
+                        {...props}
+                        // label="I must complete this goal..."
+                        placeholder="I must complete this goal..."
+                        placeholderTextColor="#797776"
+                        autoCapitalize="none"
+                        // autoCompleteType="password"
+                        autoCorrect={false}
+                        onChangeText={text => props.field.onChange(text)}
+                        underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                        activeUnderlineColor="#797776"
+                        mode="flat"
+                        textContentType="password"
                         style={{
-                          marginLeft: 10,
-                          flexDirection: 'row',
-                          backgroundColor: 'lightgrey',
-                          borderRadius: 5,
-                          alignItems: 'center',
-                        }}>
-                        <Text>{item.value}</Text>
-                        <TouchableOpacity onPress={() => handleClick(item)}>
-                          <Icon name="close" size={23} />
-                        </TouchableOpacity>
-                      </View>
-                    ))}
+                          backgroundColor:
+                            '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                          borderColor: '#1D2E54',
+                          borderRadius: 4,
+                          width: '90%',
+                          alignSelf: 'center',
+                          padding: 10,
+                        }}
+                      />
+                    )}
+                  />
                 </View>
-                <SizedBox height={20} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    marginBottom: 8,
-                    fontSize: 22,
-                    lineHeight: 28,
-                    fontWeight: '500',
-                    color: '#1F1C1B',
-                  }}>
-                  Award for completing this goal
-                </Text>
+              </Pressable>
 
-                <Pressable onPress={target => target.current?.focus()}>
-                  <View>
-                    <Controller
-                      control={control}
-                      rules={{required: true}}
-                      name="award"
-                      render={props => (
-                        <TextInput
-                          {...props}
-                          // label="Award for completing this goal"
-                          placeholder="I will go on the vacation..."
-                          placeholderTextColor="#797776"
-                          autoCapitalize="none"
-                          autoCompleteType="password"
-                          autoCorrect={false}
-                          onChangeText={text => props.field.onChange(text)}
-                          underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                          activeUnderlineColor="#797776"
-                          mode="flat"
-                          textContentType="password"
-                          style={{
-                            backgroundColor:
-                              '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                            borderColor: '#1D2E54',
-                            borderRadius: 4,
-                            width: '90%',
-                            alignSelf: 'center',
-                            padding: 10,
-                          }}
-                        />
-                      )}
-                    />
-                  </View>
-                </Pressable>
-                <SizedBox height={20} />
+              <SizedBox height={20} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  marginBottom: 8,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
+                  fontWeight: '400',
+                }}>
+                {'Success Criteria(optional)'}
+              </Text>
 
-                <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonTitle}>Create</Text>
-                  </View>
-                </TouchableOpacity>
-                <DatePicker
-                  mode="date"
-                  modal
-                  open={dateOpen}
-                  date={startDate}
-                  onDateChange={setStartDate}
-                  onConfirm={date => {
-                    setDateOpen(false);
-                    setStartDate(date);
-                  }}
-                  onCancel={() => {
-                    setDateOpen(false);
-                  }}
-                />
-                <SizedBox height={100} />
+              <Pressable onPress={target => target.current?.focus()}>
+                <View>
+                  <TextInput
+                    // label="Success Criteria"
+                    placeholder="Set Success Criteria"
+                    placeholderTextColor="#797776"
+                    autoCapitalize="none"
+                    // autoCompleteType="password"
+                    autoCorrect={false}
+                    onChangeText={text => setCriteria(text)}
+                    underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                    activeUnderlineColor="#797776"
+                    mode="flat"
+                    value={criteria}
+                    onSubmitEditing={() => onSubmitEditing()}
+                    textContentType="password"
+                    style={{
+                      backgroundColor:
+                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                      borderColor: '#1D2E54',
+                      borderRadius: 4,
+                      width: '90%',
+                      alignSelf: 'center',
+                      padding: 10,
+                    }}
+                  />
+                </View>
+              </Pressable>
+              <SizedBox height={5} />
+              <View style={{flexDirection: 'row'}}>
+                {!!criteriaItems &&
+                  criteriaItems.map((item, i) => (
+                    <View
+                      key={i}
+                      style={{
+                        marginLeft: 10,
+                        flexDirection: 'row',
+                        backgroundColor: 'lightgrey',
+                        borderRadius: 5,
+                        alignItems: 'center',
+                      }}>
+                      <Text>{item.value}</Text>
+                      <TouchableOpacity onPress={() => handleClick(item)}>
+                        <Icon name="close" size={23} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
               </View>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </View>
+              <SizedBox height={20} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  marginBottom: 8,
+                  fontSize: 22,
+                  lineHeight: 28,
+                  fontWeight: '500',
+                  color: '#1F1C1B',
+                }}>
+                Award for completing this goal
+              </Text>
+
+              <Pressable onPress={target => target.current?.focus()}>
+                <View>
+                  <Controller
+                    control={control}
+                    rules={{required: true}}
+                    name="award"
+                    render={props => (
+                      <TextInput
+                        {...props}
+                        // label="Award for completing this goal"
+                        placeholder="I will go on the vacation..."
+                        placeholderTextColor="#797776"
+                        autoCapitalize="none"
+                        autoCompleteType="password"
+                        autoCorrect={false}
+                        onChangeText={text => props.field.onChange(text)}
+                        underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                        activeUnderlineColor="#797776"
+                        mode="flat"
+                        textContentType="password"
+                        style={{
+                          backgroundColor:
+                            '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                          borderColor: '#1D2E54',
+                          borderRadius: 4,
+                          width: '90%',
+                          alignSelf: 'center',
+                          padding: 10,
+                        }}
+                      />
+                    )}
+                  />
+                </View>
+              </Pressable>
+              <SizedBox height={20} />
+
+              <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonTitle}>Create</Text>
+                </View>
+              </TouchableOpacity>
+              <DatePicker
+                mode="date"
+                modal
+                open={dateOpen}
+                date={startDate}
+                onDateChange={setStartDate}
+                onConfirm={date => {
+                  setDateOpen(false);
+                  setStartDate(date);
+                }}
+                onCancel={() => {
+                  setDateOpen(false);
+                }}
+              />
+              <SizedBox height={100} />
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
     // </TouchableWithoutFeedback>
   );
 };
