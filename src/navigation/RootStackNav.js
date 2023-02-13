@@ -24,14 +24,14 @@ import {useSelector} from 'react-redux';
 const Stack = createNativeStackNavigator();
 
 const RootStackNav = () => {
-  const isSignedIn = useSelector(state => state.signIn.isSignedIn);
+  const user = useSelector(state => state.auth.user);
 
   return (
     <Stack.Navigator
       screenOptions={{
-        // header: props => <StackCustomHeader {...props} />,
+        header: props => <StackCustomHeader {...props} />,
       }}>
-      {isSignedIn ? (
+      {user ? (
         <Stack.Group screenOptions={{presentation: 'modal'}}>
           <Stack.Screen
             name="Tab"

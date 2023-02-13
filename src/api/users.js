@@ -1,27 +1,20 @@
-import axios from 'axios';
-import {BACK_URL} from '@env';
-
-console.log(BACK_URL, 1);
+import axios from './axios';
 
 const users = {
   getUsersById: async (token, id) => {
-    return await axios.get(BACK_URL + `/api/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.get(`users/${id}`);
   },
   deleteUser: async (token, email) => {
-    return await axios.delete(BACK_URL + `/api/users/${email}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.delete(`users/${email}`);
   },
-  updateUser: async (data, token, email) => {
-    return await axios.put(BACK_URL + `/api/users/${email}`, data, {
+  updateUser: async (data, userId) => {
+    console.log(111111, data);
+    return await axios.put(`users/${userId}`, data);
+  },
+  uploadImage: async data => {
+    return await axios.post(`file/upload/users/avatar`, data, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
       },
     });
   },

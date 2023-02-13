@@ -11,14 +11,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  FlatList,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
-import auth from '../../api/auth';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
+import {register} from '../../redux/thunks/auth';
 
 function useStyles() {
   return StyleSheet.create({
@@ -99,7 +96,7 @@ const SignUp = ({navigation}) => {
   const [error, setError] = useState('');
   const dispatch = useDispatch();
 
-  const {control, handleSubmit, formState, reset} = useForm({
+  const {control, handleSubmit, formState, reset, getValues} = useForm({
     defaultValues: {
       firstName: '',
       lastName: '',
@@ -111,10 +108,10 @@ const SignUp = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      const token = await auth.register(data);
-      await EncryptedStorage.setItem('user', JSON.stringify({...token.data}));
-      reset();
-      navigation.navigate('Survey');
+      dispatch(register(data)).then(() => {
+        navigation.navigate('Survey', {email: getValues('email')});
+        reset();
+      });
     } catch (e) {
       console.log(e);
       Alert.alert('Invalid credentials, try again');

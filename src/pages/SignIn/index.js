@@ -19,6 +19,7 @@ import auth from '../../api/auth';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
 import {setSignIn} from '../../redux/reducers/signInSlice';
+import {login} from '../../redux/thunks/auth';
 
 function useStyles() {
   return StyleSheet.create({
@@ -122,10 +123,9 @@ const SignIn = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      const token = await auth.login(data);
-      await EncryptedStorage.setItem('user', JSON.stringify({...token.data}));
-      reset();
-      dispatch(setSignIn(true));
+      dispatch(login(data)).then(() => {
+        reset();
+      });
     } catch (e) {
       console.log(e);
       Alert.alert(e.message);

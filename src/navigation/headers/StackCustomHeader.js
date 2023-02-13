@@ -6,6 +6,7 @@ import users from '../../api/users';
 import {setSignIn} from '../../redux/reducers/signInSlice';
 import {Alert, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {Appbar, Dialog, Menu, Portal, Provider} from 'react-native-paper';
+import {logout} from '../../redux/thunks/auth';
 
 const ConditionalWrapper = ({children}) => {
   return Platform.OS === 'ios' ? <Provider>{children}</Provider> : children;
@@ -70,10 +71,10 @@ const StackCustomHeader = ({navigation}) => {
           <Menu.Item
             onPress={async () => {
               closeMenu();
-              const userData = JSON.parse(
-                await EncryptedStorage.getItem('user'),
-              );
-              navigation.navigate('EditProfile', {user: userData});
+              // const userData = JSON.parse(
+              //   await EncryptedStorage.getItem('user'),
+              // );
+              navigation.navigate('EditProfile');
             }}
             title="Edit Profile"
           />
@@ -94,7 +95,7 @@ const StackCustomHeader = ({navigation}) => {
           <Menu.Item
             onPress={async () => {
               await EncryptedStorage.clear();
-              dispatch(setSignIn(false));
+              dispatch(logout());
             }}
             title="Log Out"
           />
