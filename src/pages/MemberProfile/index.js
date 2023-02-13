@@ -2,37 +2,30 @@ import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
   ScrollView,
   Dimensions,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import accountabilityGroups from '../../api/accountabilityGroups';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import users from '../../api/users';
 import {Avatar, ProgressBar} from 'react-native-paper';
 import goals from '../../api/goals';
 import actionItems from '../../api/actionItems';
+import {useSelector} from 'react-redux';
 
 const MemberProfile = ({navigation, route}) => {
-  const {user} = route.params;
+  // const {user} = route.params;
   const [usersInfo, setUsersInfo] = useState([]);
   const [goalsData, setGoalsData] = useState([]);
   const [actionItemsData, setActionItemsData] = useState([]);
   const [label, setLabel] = useState('');
+  const user = useSelector(state => state.auth.user);
 
   useEffect(() => {
     const getData = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(userData.token, user.id);
+      // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+      const allGoals = await goals.getGoals(user.id);
       const allActionItems = await Promise.all(
         allGoals.data.rows.map(async item => {
-          const actionItem = await actionItems.getActionItems(
-            userData.token,
-            item.id,
-          );
+          const actionItem = await actionItems.getActionItems(item.id);
           return actionItem.data.rows;
         }),
       );

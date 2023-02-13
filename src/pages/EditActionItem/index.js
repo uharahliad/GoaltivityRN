@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,24 +8,16 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
-  FlatList,
   ScrollView,
   TextInput,
 } from 'react-native';
 import {Portal, Modal} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import goals from '../../api/goals';
-import goalCategories from '../../api/goalCategories';
-import successCriteria from '../../api/successCriteria';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
-import DropDownPicker from 'react-native-dropdown-picker';
-import DatePicker from 'react-native-date-picker';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {current} from '@reduxjs/toolkit';
 import actionItems from '../../api/actionItems';
 import {Picker} from '@react-native-picker/picker';
 
@@ -204,6 +195,7 @@ const EditActionItem = ({navigation, route}) => {
   const [goalsSelect, setGoalsSelect] = useState([]);
 
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
   const {control, handleSubmit, formState, getValues, reset} = useForm({
     defaultValues: {
@@ -212,8 +204,8 @@ const EditActionItem = ({navigation, route}) => {
   });
   useEffect(() => {
     const getGoals = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(userData.token, userData.id);
+      // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+      const allGoals = await goals.getGoals(user.id);
       setGoalsData(allGoals.data.rows);
     };
     getGoals();
@@ -309,7 +301,6 @@ const EditActionItem = ({navigation, route}) => {
     const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
       const editActionItem = await actionItems.updateActionItem(
-        currentUser.token,
         {
           goal: goalsValue,
           name: data.actionItem,
@@ -329,10 +320,7 @@ const EditActionItem = ({navigation, route}) => {
 
   const handleDelete = async () => {
     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteActionItem = await actionItems.deleteActionItem(
-      userData.token,
-      actionItem.id,
-    );
+    const deleteActionItem = await actionItems.deleteActionItem(actionItem.id);
     navigation.navigate('Home');
   };
 
@@ -342,252 +330,250 @@ const EditActionItem = ({navigation, route}) => {
 
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.root}>
-        <SafeAreaView style={styles.safeAreaView}>
-          <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.content}>
-            <ScrollView>
-              <TouchableOpacity
-                onPress={handleDelete}
-                style={{position: 'absolute', top: 10, right: 10}}>
-                <Icon name="delete" size={20} />
-              </TouchableOpacity>
+    <View style={styles.root}>
+      <SafeAreaView style={styles.safeAreaView}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.content}>
+          <ScrollView>
+            <TouchableOpacity
+              onPress={handleDelete}
+              style={{position: 'absolute', top: 10, right: 10}}>
+              <Icon name="delete" size={20} />
+            </TouchableOpacity>
+            <Text
+              style={{
+                top: 40,
+                left: 10,
+                fontSize: 24,
+                lineHeight: 32,
+                fontWeight: '400',
+                color: '#1D2E54',
+              }}>
+              Edit Weekly Action Item
+            </Text>
+            <SizedBox height={20} />
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: 'white',
+                top: 50,
+              }}>
+              <SizedBox height={30} />
               <Text
                 style={{
-                  top: 40,
-                  left: 10,
-                  fontSize: 24,
-                  lineHeight: 32,
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
                   fontWeight: '400',
-                  color: '#1D2E54',
+                  marginBottom: 10,
                 }}>
-                Edit Weekly Action Item
+                Weekly Action Item
               </Text>
-              <SizedBox height={20} />
-              <View
+              <Pressable onPress={target => target.current?.focus()}>
+                <View>
+                  <Controller
+                    control={control}
+                    name="actionItem"
+                    rules={{required: true}}
+                    render={props => (
+                      <TextInput
+                        {...props}
+                        value={props.field.value}
+                        // label="Action Item"
+                        placeholder="Type Item Name"
+                        placeholderTextColor="#1D2E54"
+                        autoCapitalize="none"
+                        autoCompleteType="email"
+                        autoCorrect={false}
+                        keyboardType="email-address"
+                        underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
+                        activeUnderlineColor="#1D2E54"
+                        mode="flat"
+                        onChangeText={text => props.field.onChange(text)}
+                        textContentType="username"
+                        style={{
+                          backgroundColor:
+                            '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                          borderColor: '#1D2E54',
+                          borderRadius: 4,
+                          width: '90%',
+                          alignSelf: 'center',
+                          padding: 10,
+                        }}
+                      />
+                    )}
+                  />
+                </View>
+              </Pressable>
+              <SizedBox height={30} />
+              <Text
                 style={{
-                  flex: 1,
-                  backgroundColor: 'white',
-                  top: 50,
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
+                  fontWeight: '400',
+                  marginBottom: 10,
                 }}>
-                <SizedBox height={30} />
-                <Text
+                12-Week goal
+              </Text>
+              {goalsValue && goalsSelect.length ? (
+                <Picker
+                  selectedValue={goalsValue}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setGoalsValue(itemValue)
+                  }
                   style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 10,
+                    backgroundColor:
+                      '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                    borderColor: '#1D2E54',
+                    borderRadius: 4,
+                    width: '90%',
+                    alignSelf: 'center',
                   }}>
-                  Weekly Action Item
-                </Text>
-                <Pressable onPress={target => target.current?.focus()}>
-                  <View>
-                    <Controller
-                      control={control}
-                      name="actionItem"
-                      rules={{required: true}}
-                      render={props => (
-                        <TextInput
-                          {...props}
-                          value={props.field.value}
-                          // label="Action Item"
-                          placeholder="Type Item Name"
-                          placeholderTextColor="#1D2E54"
-                          autoCapitalize="none"
-                          autoCompleteType="email"
-                          autoCorrect={false}
-                          keyboardType="email-address"
-                          underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                          activeUnderlineColor="#1D2E54"
-                          mode="flat"
-                          onChangeText={text => props.field.onChange(text)}
-                          textContentType="username"
-                          style={{
-                            backgroundColor:
-                              '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                            borderColor: '#1D2E54',
-                            borderRadius: 4,
-                            width: '90%',
-                            alignSelf: 'center',
-                            padding: 10,
-                          }}
-                        />
-                      )}
-                    />
-                  </View>
-                </Pressable>
-                <SizedBox height={30} />
-                <Text
+                  {goalsSelect.length &&
+                    goalsSelect.map((item, i) => (
+                      <Picker.Item
+                        color="#797776"
+                        key={i}
+                        label={item.label}
+                        value={item.value}
+                      />
+                    ))}
+                </Picker>
+              ) : null}
+              <SizedBox height={30} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
+                  fontWeight: '400',
+                  marginBottom: 10,
+                }}>
+                Week
+              </Text>
+              {weekValue && weeks.length ? (
+                <Picker
+                  selectedValue={weekValue}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setWeekValue(itemValue)
+                  }
                   style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 10,
+                    backgroundColor:
+                      '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                    borderColor: '#1D2E54',
+                    borderRadius: 4,
+                    width: '90%',
+                    alignSelf: 'center',
                   }}>
-                  12-Week goal
-                </Text>
-                {goalsValue && goalsSelect.length ? (
-                  <Picker
-                    selectedValue={goalsValue}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setGoalsValue(itemValue)
-                    }
+                  {weeks.length &&
+                    weeks.map((item, i) => (
+                      <Picker.Item
+                        color="#797776"
+                        key={i}
+                        label={item.label}
+                        value={item.value}
+                      />
+                    ))}
+                </Picker>
+              ) : null}
+              <SizedBox height={30} />
+              <Text
+                style={{
+                  marginLeft: 23,
+                  fontSize: 14,
+                  lineHeight: 20,
+                  color: '#1F1C1B',
+                  fontWeight: '400',
+                  marginBottom: 10,
+                }}>
+                Set Status
+              </Text>
+              {statusValue && statuses.length ? (
+                <Picker
+                  selectedValue={statusValue}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setStatusValue(itemValue)
+                  }
+                  style={{
+                    backgroundColor:
+                      '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
+                    borderColor: '#1D2E54',
+                    borderRadius: 4,
+                    width: '90%',
+                    alignSelf: 'center',
+                  }}>
+                  {statuses.length &&
+                    statuses.map((item, i) => (
+                      <Picker.Item
+                        color="#797776"
+                        key={i}
+                        label={item.label}
+                        value={item.value}
+                      />
+                    ))}
+                </Picker>
+              ) : null}
+              <SizedBox height={40} />
+              <TouchableOpacity onPress={handleSubmit(onSubmit)}>
+                <View style={styles.button}>
+                  <Text style={styles.buttonTitle}>Edit</Text>
+                </View>
+              </TouchableOpacity>
+              <SizedBox height={100} />
+              <Portal>
+                <Modal
+                  visible={openStatus}
+                  onDismiss={hideModal}
+                  contentContainerStyle={{
+                    backgroundColor: 'white',
+                    alignSelf: 'center',
+                    height: '45%',
+                    width: '80%',
+                    padding: 20,
+                    borderRadius: 16,
+                  }}>
+                  <View
                     style={{
-                      backgroundColor:
-                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                      borderColor: '#1D2E54',
-                      borderRadius: 4,
-                      width: '90%',
+                      height: 25,
+                      width: 25,
                       alignSelf: 'center',
-                    }}>
-                    {goalsSelect.length &&
-                      goalsSelect.map((item, i) => (
-                        <Picker.Item
-                          color="#797776"
-                          key={i}
-                          label={item.label}
-                          value={item.value}
-                        />
-                      ))}
-                  </Picker>
-                ) : null}
-                <SizedBox height={30} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 10,
-                  }}>
-                  Week
-                </Text>
-                {weekValue && weeks.length ? (
-                  <Picker
-                    selectedValue={weekValue}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setWeekValue(itemValue)
-                    }
-                    style={{
-                      backgroundColor:
-                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                      borderColor: '#1D2E54',
-                      borderRadius: 4,
-                      width: '90%',
-                      alignSelf: 'center',
-                    }}>
-                    {weeks.length &&
-                      weeks.map((item, i) => (
-                        <Picker.Item
-                          color="#797776"
-                          key={i}
-                          label={item.label}
-                          value={item.value}
-                        />
-                      ))}
-                  </Picker>
-                ) : null}
-                <SizedBox height={30} />
-                <Text
-                  style={{
-                    marginLeft: 23,
-                    fontSize: 14,
-                    lineHeight: 20,
-                    color: '#1F1C1B',
-                    fontWeight: '400',
-                    marginBottom: 10,
-                  }}>
-                  Set Status
-                </Text>
-                {statusValue && statuses.length ? (
-                  <Picker
-                    selectedValue={statusValue}
-                    onValueChange={(itemValue, itemIndex) =>
-                      setStatusValue(itemValue)
-                    }
-                    style={{
-                      backgroundColor:
-                        '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                      borderColor: '#1D2E54',
-                      borderRadius: 4,
-                      width: '90%',
-                      alignSelf: 'center',
-                    }}>
-                    {statuses.length &&
-                      statuses.map((item, i) => (
-                        <Picker.Item
-                          color="#797776"
-                          key={i}
-                          label={item.label}
-                          value={item.value}
-                        />
-                      ))}
-                  </Picker>
-                ) : null}
-                <SizedBox height={40} />
-                <TouchableOpacity onPress={handleSubmit(onSubmit)}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonTitle}>Edit</Text>
-                  </View>
-                </TouchableOpacity>
-                <SizedBox height={100} />
-                <Portal>
-                  <Modal
-                    visible={openStatus}
-                    onDismiss={hideModal}
-                    contentContainerStyle={{
-                      backgroundColor: 'white',
-                      alignSelf: 'center',
-                      height: '45%',
-                      width: '80%',
-                      padding: 20,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#8DC63F',
                       borderRadius: 16,
+                      marginRight: 12,
                     }}>
-                    <View
-                      style={{
-                        height: 25,
-                        width: 25,
-                        alignSelf: 'center',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: '#8DC63F',
-                        borderRadius: 16,
-                        marginRight: 12,
-                      }}>
-                      <Icon name="check" color="white" size={20} />
-                    </View>
-                    <SizedBox height={20} />
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 24,
-                        lineHeight: 32,
-                        fontWeight: '400',
-                        color: 'black',
-                      }}>
-                      Well Done!
-                    </Text>
-                    <SizedBox height={40} />
-                    <Text
-                      style={{color: 'black', fontSize: 14, lineHeight: 20}}>
-                      You’ve completed weekly action item. This brings you a
-                      step closer to achieveing your 12-Week goal. Create
-                      another weekly action item and continue working on your
-                      goal.
-                    </Text>
-                  </Modal>
-                </Portal>
-              </View>
-            </ScrollView>
-          </KeyboardAvoidingView>
-        </SafeAreaView>
-      </View>
+                    <Icon name="check" color="white" size={20} />
+                  </View>
+                  <SizedBox height={20} />
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: 24,
+                      lineHeight: 32,
+                      fontWeight: '400',
+                      color: 'black',
+                    }}>
+                    Well Done!
+                  </Text>
+                  <SizedBox height={40} />
+                  <Text style={{color: 'black', fontSize: 14, lineHeight: 20}}>
+                    You’ve completed weekly action item. This brings you a step
+                    closer to achieveing your 12-Week goal. Create another
+                    weekly action item and continue working on your goal.
+                  </Text>
+                </Modal>
+              </Portal>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
     // </TouchableWithoutFeedback>
   );
 };

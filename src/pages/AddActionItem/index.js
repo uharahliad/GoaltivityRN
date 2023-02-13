@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,23 +8,15 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
-  FlatList,
   ScrollView,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import goals from '../../api/goals';
-import goalCategories from '../../api/goalCategories';
-import successCriteria from '../../api/successCriteria';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
-import DropDownPicker from 'react-native-dropdown-picker';
-import DatePicker from 'react-native-date-picker';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {current} from '@reduxjs/toolkit';
 import actionItems from '../../api/actionItems';
 import {Picker} from '@react-native-picker/picker';
 
@@ -180,10 +171,12 @@ const AddActionItem = ({navigation}) => {
   const [goalsData, setGoalsData] = useState([]);
   const [goalsSelect, setGoalsSelect] = useState([]);
 
+  const user = useSelector(state => state.auth.user);
+
   useEffect(() => {
     const getGoals = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(userData.token, userData.id);
+      // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+      const allGoals = await goals.getGoals(user.id);
       setGoalsData(allGoals.data.rows);
     };
     getGoals();
@@ -300,8 +293,7 @@ const AddActionItem = ({navigation}) => {
             week: weekValue,
             status: 'toDo',
           },
-        },
-        currentUser.token,
+        }
       );
       navigation.navigate('Home');
     } catch (e) {

@@ -1,22 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, FlatList, TouchableOpacity, Image} from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import accountabilityGroups from '../../api/accountabilityGroups';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import users from '../../api/users';
-import {Appbar, Avatar} from 'react-native-paper';
+import {View, Text} from 'react-native';
+import {Avatar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 
 const UserProfile = ({navigation, route}) => {
-  const [user, setUser] = useState(null);
+  const user = useSelector(state => state.auth.user);
   const [label, setLabel] = useState('');
-
-  useEffect(() => {
-    const getUser = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      setUser(userData);
-    };
-    getUser();
-  }, []);
 
   useEffect(() => {
     if (user !== null) {
@@ -25,8 +14,6 @@ const UserProfile = ({navigation, route}) => {
       setLabel(first + last);
     }
   }, [user]);
-
-  console.log(user);
 
   return (
     <View style={{flex: 1, flexDirection: 'column'}}>

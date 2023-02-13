@@ -1,19 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Animated,
   View,
   Text,
-  Pressable,
-  Button,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {useTheme} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
-import {setModalOpen} from '../../redux/reducers/modalSlice';
-import {store} from '../../redux/store/store';
+import {useSelector} from 'react-redux';
 import goals from '../../api/goals';
-import EncryptedStorage from 'react-native-encrypted-storage';
 
 function useStyles() {
   return StyleSheet.create({
@@ -92,14 +85,20 @@ const SizedBox = ({height, width}) => {
 
 const AddModal = ({navigation}) => {
   const [data, setData] = useState([]);
+  const user = useSelector(state => state.auth.user);
+
   useEffect(() => {
     const getGoals = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const goalsData = await goals.getGoals(userData.token, userData.id);
-      setData(goalsData.data.rows);
+      try {
+        // const userData = JSON.parse(await EncryptedStorage.getItem('token'));
+        const goalsData = await goals.getGoals(user.id);
+        setData(goalsData.data.rows);
+      } catch (e) {
+        console.log('Error Add modal: ', e);
+      }
     };
     getGoals();
-  }, []);
+  }, [user]);
 
   return (
     <TouchableOpacity
