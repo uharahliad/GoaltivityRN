@@ -17,6 +17,7 @@ import {List} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PercentageCircle from 'react-native-percentage-circle';
+import {useSelector} from 'react-redux';
 
 const Home = ({navigation}) => {
   const [goalsData, setGoalsData] = useState([]);
@@ -26,9 +27,10 @@ const Home = ({navigation}) => {
   const [weekStart, setWeekStart] = useState('');
   const [weekEnd, setWeekEnd] = useState('');
   const [actionItemsData, setActionItemsData] = useState([]);
-  const [user, setUser] = useState(null);
   const [expanded, setExpanded] = useState(true);
   const [index, setIndex] = useState(0);
+  const user = useSelector(state => state.auth.user);
+
   const viewableItemsChanged = useRef(({viewableItems}) => {
     setIndex(viewableItems[0].index);
   }).current;
@@ -38,20 +40,22 @@ const Home = ({navigation}) => {
   useFocusEffect(
     useCallback(() => {
       const getData = async () => {
-        const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-        setUser(userData);
-        const allGoals = await goals.getGoals(userData.token, userData.id);
-        const allActionItems = await Promise.all(
-          allGoals.data.rows.map(async item => {
-            const actionItem = await actionItems.getActionItems(
-              userData.token,
-              item.id,
-            );
-            return actionItem.data.rows;
-          }),
-        );
-        setGoalsData(allGoals.data.rows);
-        setActionItemsData(allActionItems);
+        try {
+          const allGoals = await goals.getGoals(user.id);
+
+          console.log('AAll goals', allGoals.data.rows);
+
+          // const allActionItems = await Promise.all(
+          //   allGoals.data.rows.map(async item => {
+          //     const actionItem = await actionItems.getActionItems(item.id);
+          //     return actionItem.data.rows;
+          //   }),
+          // );
+          setGoalsData(allGoals.data.rows);
+          // setActionItemsData(allActionItems);
+        } catch (e) {
+          console.log('Error home', e);
+        }
       };
       getData();
     }, []),
@@ -106,11 +110,7 @@ const Home = ({navigation}) => {
   };
 
   const handleDeleteActionItem = async action => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteActionItem = await actionItems.deleteActionItem(
-      userData.token,
-      action.id,
-    );
+    const deleteActionItem = await actionItems.deleteActionItem(action.id);
   };
 
   console.log(actionItemsData);

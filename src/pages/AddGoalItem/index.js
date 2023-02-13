@@ -20,8 +20,7 @@ import {Controller, useForm} from 'react-hook-form';
 import goals from '../../api/goals';
 import goalCategories from '../../api/goalCategories';
 import successCriteria from '../../api/successCriteria';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setSignIn} from '../../redux/reducers/signInSlice';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from 'react-native-date-picker';
@@ -100,16 +99,11 @@ function useStyles() {
       //   fontWeight: '700',
       lineHeight: 44,
     },
+    placeholderColor: {
+      color: '#1C1B1F',
+    },
   });
 }
-
-const categories = [
-  'Career/Business',
-  'Family & Relationships',
-  'Personal Growth',
-  'Health',
-  'Recreation/Leisure',
-];
 
 const SizedBox = ({height, width}) => {
   return <View style={{height, width}} />;
@@ -120,20 +114,12 @@ const AddGoalItem = ({navigation}) => {
   const [endDate, setEndDate] = useState(null);
   const [dateOpen, setDateOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(categories[0]);
+  const [value, setValue] = useState('');
   const [criteria, setCriteria] = useState('');
   const [criteriaItems, setCriteriaItems] = useState([]);
-  const [items, setItems] = useState([
-    {
-      label: 'Career/Business',
-      value: 'Career/Business',
-    },
-    {label: 'Family & Relationships', value: 'Family & Relationships'},
-    {label: 'Personal Growth', value: 'Personal Growth'},
-    {label: 'Health', value: 'Health'},
-    {label: 'Recreation/Leisure', value: 'Recreation/Leisure'},
-  ]);
+  const [items, setItems] = useState(null);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
   const {control, handleSubmit, formState, getValues} = useForm({
     defaultValues: {
@@ -144,6 +130,21 @@ const AddGoalItem = ({navigation}) => {
   });
 
   useEffect(() => {
+    (async () => {
+      try {
+        const res = await goalCategories.getGoalCategories();
+        const data = res.data.rows.map(el => ({
+          label: el.name,
+          value: el.id,
+        }));
+        setItems(data);
+      } catch (error) {
+        console.log('Error goals: ', error);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
     if (startDate) {
       const copyDate = new Date(startDate.getTime());
       setEndDate(new Date(copyDate.setDate(copyDate.getDate() + 90)));
@@ -151,39 +152,32 @@ const AddGoalItem = ({navigation}) => {
   }, [startDate]);
 
   const onSubmit = async data => {
-    const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      console.log(
-        data.goalName,
-        {name: value[0]},
-        criteriaItems,
-        currentUser.email,
-        data.award,
-        data.reason,
-        startDate,
-        endDate,
-        '0',
-        currentUser.token,
-      );
-      const newGoal = await goals.createGoal(
-        {
-          data: {
-            name: data.goalName,
-            goalCategory: {name: value[0]},
-            successCriteria: criteriaItems,
-            author: currentUser.email,
-            award: data.award,
-            reason: data.reason,
-            startDate,
-            endDate,
-            status: '0',
-          },
+      console.log({
+        author: user.id,
+        name: data.goalName,
+        category: value, //category id
+        award: data.award,
+        reason: data.reason,
+        start_date: startDate,
+        end_date: endDate,
+      });
+
+      const newGoal = await goals.createGoal({
+        data: {
+          author: user.id,
+          name: data.goalName,
+          category: value, //category id
+          award: data.award,
+          reason: data.reason,
+          start_date: startDate,
+          end_date: endDate,
         },
-        currentUser.token,
-      );
+      });
+      console.log('Created new goal', newGoal);
       navigation.navigate('Home');
     } catch (e) {
-      console.log(e);
+      console.log('Error', e);
       Alert.alert(e.message);
     }
   };
@@ -260,7 +254,7 @@ const AddGoalItem = ({navigation}) => {
                         {...props}
                         // label="Goal Name"
                         placeholder="Type Goal Name"
-                        placeholderTextColor="#797776"
+                        placeholderTextColor={styles.placeholderColor}
                         autoCapitalize="none"
                         autoCompleteType="email"
                         autoCorrect={false}
@@ -278,6 +272,7 @@ const AddGoalItem = ({navigation}) => {
                           width: '90%',
                           alignSelf: 'center',
                           padding: 10,
+                          color: '#1F1C1B',
                         }}
                       />
                     )}
@@ -306,7 +301,7 @@ const AddGoalItem = ({navigation}) => {
                       editable={false}
                       // label="Start Date"
                       placeholder="Add Start Date"
-                      placeholderTextColor="#1D2E54"
+                      placeholderTextColor={styles.placeholderColor}
                       autoCapitalize="none"
                       autoCompleteType="firstName"
                       autoCorrect={false}
@@ -324,6 +319,7 @@ const AddGoalItem = ({navigation}) => {
                         //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
                         // borderColor: '#1D2E54',
                         width: 120,
+                        color: '#1F1C1B',
                       }}
                     />
                     <TouchableOpacity
@@ -356,7 +352,7 @@ const AddGoalItem = ({navigation}) => {
                       editable={false}
                       // label="End Date"
                       placeholder="Add End Date"
-                      placeholderTextColor="#1D2E54"
+                      placeholderTextColor={styles.placeholderColor}
                       autoCapitalize="none"
                       autoCompleteType="secondName"
                       autoCorrect={false}
@@ -374,6 +370,7 @@ const AddGoalItem = ({navigation}) => {
                         // borderColor: '#1D2E54',
                         // borderRadius: 4,
                         width: 120,
+                        color: '#1F1C1B',
                       }}
                     />
                     <TouchableOpacity
@@ -410,7 +407,7 @@ const AddGoalItem = ({navigation}) => {
                   width: '90%',
                   alignSelf: 'center',
                 }}>
-                {items.length &&
+                {items &&
                   items.map((item, i) => (
                     <Picker.Item
                       color="#797776"
@@ -493,7 +490,7 @@ const AddGoalItem = ({navigation}) => {
                         {...props}
                         // label="I must complete this goal..."
                         placeholder="I must complete this goal..."
-                        placeholderTextColor="#797776"
+                        placeholderTextColor={styles.placeholderColor}
                         autoCapitalize="none"
                         // autoCompleteType="password"
                         autoCorrect={false}
@@ -510,6 +507,7 @@ const AddGoalItem = ({navigation}) => {
                           width: '90%',
                           alignSelf: 'center',
                           padding: 10,
+                          color: '#1F1C1B',
                         }}
                       />
                     )}
@@ -535,7 +533,7 @@ const AddGoalItem = ({navigation}) => {
                   <TextInput
                     // label="Success Criteria"
                     placeholder="Set Success Criteria"
-                    placeholderTextColor="#797776"
+                    placeholderTextColor={styles.placeholderColor}
                     autoCapitalize="none"
                     // autoCompleteType="password"
                     autoCorrect={false}
@@ -554,6 +552,7 @@ const AddGoalItem = ({navigation}) => {
                       width: '90%',
                       alignSelf: 'center',
                       padding: 10,
+                      color: '#1F1C1B',
                     }}
                   />
                 </View>
@@ -602,7 +601,7 @@ const AddGoalItem = ({navigation}) => {
                         {...props}
                         // label="Award for completing this goal"
                         placeholder="I will go on the vacation..."
-                        placeholderTextColor="#797776"
+                        placeholderTextColor={styles.placeholderColor}
                         autoCapitalize="none"
                         autoCompleteType="password"
                         autoCorrect={false}
@@ -619,6 +618,7 @@ const AddGoalItem = ({navigation}) => {
                           width: '90%',
                           alignSelf: 'center',
                           padding: 10,
+                          color: '#1F1C1B',
                         }}
                       />
                     )}
