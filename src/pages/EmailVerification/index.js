@@ -1,24 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  Image,
-  ActivityIndicator,
-} from 'react-native';
+import {Text, View, ActivityIndicator} from 'react-native';
 import auth from '../../api/auth';
 
 const EmailVerification = ({navigation, route}) => {
   const {token} = route.params;
-  console.log(token);
   const [verified, setVerified] = useState(false);
 
   useEffect(() => {

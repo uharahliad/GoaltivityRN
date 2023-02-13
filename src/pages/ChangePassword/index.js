@@ -11,14 +11,11 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Image,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import auth from '../../api/auth';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
 
 function useStyles() {
   return StyleSheet.create({
@@ -137,9 +134,11 @@ const ChangePassword = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      console.log('SUBMIT DATA: ', data);
+      await auth.changePassword(data);
+      Alert.alert('Success', 'Password is updated');
+      navigation.goBack();
     } catch (e) {
-      console.log(e, e.code);
+      console.log(e.response.data);
       Alert.alert('Invalid credentials, try again');
     }
   };
@@ -147,8 +146,8 @@ const ChangePassword = ({navigation}) => {
   const styles = useStyles();
 
   const isActive =
-    getValues('old_password')?.length >= 6 &&
-    getValues('new_password')?.length >= 6;
+    getValues('currentPassword')?.length >= 6 &&
+    getValues('newPassword')?.length >= 6;
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -165,7 +164,7 @@ const ChangePassword = ({navigation}) => {
               <View>
                 <Controller
                   control={control}
-                  name="old_password"
+                  name="currentPassword"
                   rules={{
                     required: true,
                     minLength: 6,
@@ -196,9 +195,9 @@ const ChangePassword = ({navigation}) => {
                 />
               </View>
             </Pressable>
-            {formState.errors.old_password?.message && (
+            {formState.errors.currentPassword?.message && (
               <Text style={{marginLeft: 15, color: 'red'}}>
-                {formState.errors.old_password.message}
+                {formState.errors.currentPassword.message}
               </Text>
             )}
 
@@ -208,7 +207,7 @@ const ChangePassword = ({navigation}) => {
               <View>
                 <Controller
                   control={control}
-                  name="new_password"
+                  name="newPassword"
                   rules={{
                     required: true,
                     minLength: 6,
@@ -239,9 +238,9 @@ const ChangePassword = ({navigation}) => {
                 />
               </View>
             </Pressable>
-            {formState.errors.new_password?.message && (
+            {formState.errors.newPassword?.message && (
               <Text style={{marginLeft: 15, color: 'red'}}>
-                {formState.errors.new_password.message}
+                {formState.errors.newPassword.message}
               </Text>
             )}
 
