@@ -112,8 +112,6 @@ const SizedBox = ({height, width}) => {
 };
 
 const AddActionItem = ({navigation}) => {
-  const [openWeeks, setOpenWeeks] = useState(false);
-  const [open, setOpen] = useState(false);
   const [goalsValue, setGoalsValue] = useState();
   const [weeks, setWeeks] = useState([
     {
@@ -167,19 +165,32 @@ const AddActionItem = ({navigation}) => {
   ]);
   const [weekValue, setWeekValue] = useState(weeks[0].value);
   const [goalsSelect, setGoalsSelect] = useState([]);
+  const [statusToDo, setStatusToDo] = useState(null);
 
-  const user = useSelector(state => state.auth.user);
   const goalsData = useSelector(state => state.goals.goalsData);
 
   useEffect(() => {
-    if (goalsData) {
+    (async () => {
+      try {
+        const res = await actionItems.getStatuses();
+        const todo = res.data.rows.find(el => el.name === 'To Do');
+
+        setStatusToDo(todo);
+      } catch (e) {
+        console.log('Error fetch status: ', e);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (goalsData.length) {
       const goalsSelectData = goalsData.map(item => {
         return {
           label: item.name,
           value: item.id,
         };
       });
-      console.log(goalsSelectData);
+
       if (goalsSelectData.length) {
         setGoalsValue(goalsSelectData[0].value);
       }
@@ -188,7 +199,6 @@ const AddActionItem = ({navigation}) => {
   }, [goalsData]);
 
   useEffect(() => {
-    console.log(goalsValue);
     if (goalsData && goalsValue) {
       const goal = goalsData.filter(item => item.id === goalsValue);
       const startDate = new Date(goal[0].start_date);
@@ -261,9 +271,7 @@ const AddActionItem = ({navigation}) => {
     }
   }, [goalsValue, goalsData]);
 
-  const dispatch = useDispatch();
-
-  const {control, handleSubmit, formState, getValues} = useForm({
+  const {control, handleSubmit} = useForm({
     defaultValues: {
       goalName: '',
       reason: '',
@@ -273,17 +281,18 @@ const AddActionItem = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      const newActionItem = await actionItems.createActionItem({
+      await actionItems.createActionItem({
         data: {
           goal: goalsValue,
           name: data.actionItem,
           week: weekValue,
-          status: 'toDo',
+          status: statusToDo?.id,
         },
       });
+
       navigation.navigate('Home');
     } catch (e) {
-      console.log(e);
+      console.log('Error create action item', e);
       Alert.alert(e.message);
     }
   };

@@ -14,9 +14,8 @@ import {
 } from 'react-native';
 import {Portal, Modal} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
-import goals from '../../api/goals';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch, useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import actionItems from '../../api/actionItems';
 import {Picker} from '@react-native-picker/picker';
@@ -122,23 +121,8 @@ const EditActionItem = ({navigation, route}) => {
     setOpenStatus(false);
     navigation.navigate('Home');
   };
-  const [statusValue, setStatusValue] = useState(actionItem.status);
-  const [statuses, setStatuses] = useState([
-    {
-      label: 'In progress',
-      value: 'inProgress',
-    },
-    {
-      label: 'To do',
-      value: 'toDo',
-    },
-    {
-      label: 'Done',
-      value: 'done',
-    },
-  ]);
-  const [openWeeks, setOpenWeeks] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [statusValue, setStatusValue] = useState(actionItem.status.id);
+  const [statuses, setStatuses] = useState([]);
   const [goalsValue, setGoalsValue] = useState(goal.id);
   const [weekValue, setWeekValue] = useState(actionItem.week);
   const [weeks, setWeeks] = useState([
@@ -191,24 +175,30 @@ const EditActionItem = ({navigation, route}) => {
       value: 'Week 12',
     },
   ]);
-  const [goalsData, setGoalsData] = useState([]);
+
+  const goalsData = useSelector(state => state.goals.goalsData);
   const [goalsSelect, setGoalsSelect] = useState([]);
 
-  const dispatch = useDispatch();
-  const user = useSelector(state => state.auth.user);
-
-  const {control, handleSubmit, formState, getValues, reset} = useForm({
+  const {control, handleSubmit, reset} = useForm({
     defaultValues: {
       actionItem: actionItem.name,
     },
   });
+
   useEffect(() => {
-    const getGoals = async () => {
-      // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(user.id);
-      setGoalsData(allGoals.data.rows);
-    };
-    getGoals();
+    (async () => {
+      try {
+        const res = await actionItems.getStatuses();
+        const statusData = res.data.rows.map(el => ({
+          label: el.name,
+          value: el.id,
+        }));
+
+        setStatuses(statusData);
+      } catch (e) {
+        console.log('Error fetch status: ', e);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -298,9 +288,8 @@ const EditActionItem = ({navigation, route}) => {
   }, [goal]);
 
   const onSubmit = async data => {
-    const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      const editActionItem = await actionItems.updateActionItem(
+      await actionItems.updateActionItem(
         {
           goal: goalsValue,
           name: data.actionItem,
@@ -309,8 +298,11 @@ const EditActionItem = ({navigation, route}) => {
         },
         actionItem.id,
       );
-      if (statusValue === 'done') {
+
+      if (statuses.find(el => el.value === statusValue).label === 'Done') {
         showModal();
+      } else {
+        navigation.goBack();
       }
     } catch (e) {
       console.log(e);
@@ -325,8 +317,6 @@ const EditActionItem = ({navigation, route}) => {
   };
 
   const styles = useStyles();
-
-  console.log(goal, actionItem);
 
   return (
     // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
