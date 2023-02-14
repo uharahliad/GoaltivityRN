@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,23 +8,16 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
-  FlatList,
   ScrollView,
   TextInput,
 } from 'react-native';
-// import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import goals from '../../api/goals';
 import goalCategories from '../../api/goalCategories';
-import successCriteria from '../../api/successCriteria';
 import {useDispatch, useSelector} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
-import DropDownPicker from 'react-native-dropdown-picker';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {current} from '@reduxjs/toolkit';
 import {Picker} from '@react-native-picker/picker';
 
 function useStyles() {
@@ -100,7 +92,7 @@ function useStyles() {
       lineHeight: 44,
     },
     placeholderColor: {
-      color: '#1C1B1F',
+      color: '#86878C',
     },
   });
 }
@@ -255,10 +247,6 @@ const AddGoalItem = ({navigation}) => {
                         // label="Goal Name"
                         placeholder="Type Goal Name"
                         placeholderTextColor={styles.placeholderColor}
-                        autoCapitalize="none"
-                        autoCompleteType="email"
-                        autoCorrect={false}
-                        keyboardType="email-address"
                         underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
                         activeUnderlineColor="#797776"
                         mode="flat"
@@ -306,18 +294,12 @@ const AddGoalItem = ({navigation}) => {
                       autoCompleteType="firstName"
                       autoCorrect={false}
                       keyboardType="email-address"
-                      // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                      // activeUnderlineColor="#797776"
-                      // mode="outlined"
                       onChange={e => setStartDate(e.target.value)}
                       textContentType="date"
                       style={{
                         fontSize: 16,
                         lineHeight: 24,
                         marginLeft: 10,
-                        // backgroundColor:
-                        //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        // borderColor: '#1D2E54',
                         width: 120,
                         color: '#1F1C1B',
                       }}
@@ -355,20 +337,13 @@ const AddGoalItem = ({navigation}) => {
                       placeholderTextColor={styles.placeholderColor}
                       autoCapitalize="none"
                       autoCompleteType="secondName"
-                      autoCorrect={false}
                       keyboardType="numeric"
-                      // underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                      // activeUnderlineColor="#797776"
                       mode="flat"
                       textContentType="username"
                       style={{
                         fontSize: 16,
                         lineHeight: 24,
                         marginLeft: 10,
-                        // backgroundColor:
-                        //   '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        // borderColor: '#1D2E54',
-                        // borderRadius: 4,
                         width: 120,
                         color: '#1F1C1B',
                       }}
@@ -429,56 +404,6 @@ const AddGoalItem = ({navigation}) => {
                 }}>
                 Why must I complete this goal?
               </Text>
-
-              {/* <DropDownPicker
-                open={open}
-                value={value}
-                items={items}
-                setOpen={setOpen}
-                setValue={setValue}
-                setItems={setItems}
-                multiple={true}
-                mode="BADGE"
-                max={1}
-              /> */}
-              {/* <Pressable onPress={target => target.current?.focus()}>
-              <View>
-                <Controller
-                  control={control}
-                  name="category"
-                  rules={{
-                    required: true,
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address',
-                    },
-                  }}
-                  render={props => (
-                    <TextInput
-                      {...props}
-                      label="Category"
-                      placeholder="Select Category"
-                      placeholderTextColor="#1D2E54"
-                      autoCapitalize="none"
-                      autoCompleteType="email"
-                      autoCorrect={false}
-                      keyboardType="email-address"
-                      underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
-                      activeUnderlineColor="#1D2E54"
-                      mode="flat"
-                      onChangeText={text => props.field.onChange(text)}
-                      textContentType="username"
-                      style={{
-                        backgroundColor:
-                          '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
-                        borderColor: '#1D2E54',
-                        borderRadius: 8,
-                      }}
-                    />
-                  )}
-                />
-              </View>
-            </Pressable> */}
               <Pressable onPress={target => target.current?.focus()}>
                 <View>
                   <Controller
@@ -491,9 +416,6 @@ const AddGoalItem = ({navigation}) => {
                         // label="I must complete this goal..."
                         placeholder="I must complete this goal..."
                         placeholderTextColor={styles.placeholderColor}
-                        autoCapitalize="none"
-                        // autoCompleteType="password"
-                        autoCorrect={false}
                         onChangeText={text => props.field.onChange(text)}
                         underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
                         activeUnderlineColor="#797776"
@@ -535,8 +457,6 @@ const AddGoalItem = ({navigation}) => {
                     placeholder="Set Success Criteria"
                     placeholderTextColor={styles.placeholderColor}
                     autoCapitalize="none"
-                    // autoCompleteType="password"
-                    autoCorrect={false}
                     onChangeText={text => setCriteria(text)}
                     underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
                     activeUnderlineColor="#797776"
