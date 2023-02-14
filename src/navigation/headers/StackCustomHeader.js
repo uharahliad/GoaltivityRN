@@ -1,12 +1,12 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import users from '../../api/users';
-import {setSignIn} from '../../redux/reducers/signInSlice';
 import {Alert, Platform, Text, TouchableOpacity, View} from 'react-native';
 import {Appbar, Dialog, Menu, Portal, Provider} from 'react-native-paper';
 import {logout} from '../../redux/thunks/auth';
+import {clearUser} from '../../redux/reducers/authSlice';
 
 const ConditionalWrapper = ({children}) => {
   return Platform.OS === 'ios' ? <Provider>{children}</Provider> : children;
@@ -17,6 +17,7 @@ const StackCustomHeader = ({navigation}) => {
   const [visible, setVisible] = React.useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
   const showDialog = () => setDeleteVisible(true);
   const hideDialog = () => setDeleteVisible(false);
@@ -25,13 +26,13 @@ const StackCustomHeader = ({navigation}) => {
   const closeMenu = () => setVisible(false);
 
   const deleteAccount = async () => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteAcc = await users.deleteUser(userData.token, userData.id);
-    if (deleteAcc.status === 200) {
+    try {
+      await users.deleteUser(user.id);
+      dispatch(clearUser());
       hideDialog();
       await EncryptedStorage.clear();
-      dispatch(setSignIn(false));
-    } else {
+    } catch (e) {
+      console.log('Error', e.response);
       hideDialog();
       Alert.alert('Cannot delete your account now');
     }
