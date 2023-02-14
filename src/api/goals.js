@@ -2,7 +2,7 @@ import axios from './axios';
 
 const goals = {
   getGoals: async userId => {
-    return await axios.get(`goals/${userId}`);
+    return await axios.get(`goals/user/${userId}`);
   },
   getGoal: async (token, id) => {
     return await axios.get(`goals/${id}`);
