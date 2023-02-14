@@ -13,8 +13,6 @@ import {
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
-import goals from '../../api/goals';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import actionItems from '../../api/actionItems';
@@ -168,19 +166,10 @@ const AddActionItem = ({navigation}) => {
     },
   ]);
   const [weekValue, setWeekValue] = useState(weeks[0].value);
-  const [goalsData, setGoalsData] = useState([]);
   const [goalsSelect, setGoalsSelect] = useState([]);
 
   const user = useSelector(state => state.auth.user);
-
-  useEffect(() => {
-    const getGoals = async () => {
-      // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(user.id);
-      setGoalsData(allGoals.data.rows);
-    };
-    getGoals();
-  }, []);
+  const goalsData = useSelector(state => state.goals.goalsData);
 
   useEffect(() => {
     if (goalsData) {
@@ -283,18 +272,15 @@ const AddActionItem = ({navigation}) => {
   });
 
   const onSubmit = async data => {
-    const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      const newActionItem = await actionItems.createActionItem(
-        {
-          data: {
-            goal: goalsValue,
-            name: data.actionItem,
-            week: weekValue,
-            status: 'toDo',
-          },
-        }
-      );
+      const newActionItem = await actionItems.createActionItem({
+        data: {
+          goal: goalsValue,
+          name: data.actionItem,
+          week: weekValue,
+          status: 'toDo',
+        },
+      });
       navigation.navigate('Home');
     } catch (e) {
       console.log(e);

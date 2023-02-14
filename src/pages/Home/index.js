@@ -4,24 +4,18 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Image,
   Dimensions,
-  Animated,
-  useWindowDimensions,
   ScrollView,
 } from 'react-native';
-import goals from '../../api/goals';
 import actionItems from '../../api/actionItems';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {List} from 'react-native-paper';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PercentageCircle from 'react-native-percentage-circle';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {getGoals} from '../../redux/thunks/goals';
 
 const Home = ({navigation}) => {
-  const [goalsData, setGoalsData] = useState([]);
-  const [selectedGoal, setSelectedGoal] = useState();
+  // const [goalsData, setGoalsData] = useState([]);
   const [week, setWeek] = useState(null);
   const [weekNumber, setWeekNumber] = useState('');
   const [weekStart, setWeekStart] = useState('');
@@ -29,7 +23,9 @@ const Home = ({navigation}) => {
   const [actionItemsData, setActionItemsData] = useState([]);
   const [expanded, setExpanded] = useState(true);
   const [index, setIndex] = useState(0);
+  const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
+  const goalsData = useSelector(state => state.goals.goalsData);
 
   const viewableItemsChanged = useRef(({viewableItems}) => {
     setIndex(viewableItems[0].index);
@@ -39,26 +35,32 @@ const Home = ({navigation}) => {
 
   useFocusEffect(
     useCallback(() => {
-      const getData = async () => {
-        try {
-          const allGoals = await goals.getGoals(user.id);
-
-          console.log('AAll goals', allGoals.data.rows);
-
-          // const allActionItems = await Promise.all(
-          //   allGoals.data.rows.map(async item => {
-          //     const actionItem = await actionItems.getActionItems(item.id);
-          //     return actionItem.data.rows;
-          //   }),
-          // );
-          setGoalsData(allGoals.data.rows);
-          // setActionItemsData(allActionItems);
-        } catch (e) {
-          console.log('Error home', e);
-        }
+      let isActive = true;
+      // const getData = async () => {
+      //   try {
+      //     const allGoals = await goals.getGoals(user.id);
+      //
+      //     console.log('AAll goals', allGoals.data.rows);
+      //
+      //     // const allActionItems = await Promise.all(
+      //     //   allGoals.data.rows.map(async item => {
+      //     //     const actionItem = await actionItems.getActionItems(item.id);
+      //     //     return actionItem.data.rows;
+      //     //   }),
+      //     // );
+      //     // setActionItemsData(allActionItems);
+      //   } catch (e) {
+      //     console.log('Error home', e);
+      //   }
+      // };
+      // getData();
+      if (isActive) {
+        dispatch(getGoals());
+      }
+      return () => {
+        isActive = false;
       };
-      getData();
-    }, []),
+    }, [dispatch]),
   );
 
   useEffect(() => {
@@ -634,6 +636,7 @@ const Home = ({navigation}) => {
                 ))
               ) : (
                 <TouchableOpacity
+                  onPress={() => navigation.navigate('AddActionItem')}
                   style={{
                     alignSelf: 'center',
                     width: '90%',
@@ -651,7 +654,6 @@ const Home = ({navigation}) => {
                     },
                     shadowOpacity: 0.22,
                     shadowRadius: 2.22,
-
                     elevation: 3,
                   }}>
                   <View style={{flexDirection: 'row'}}>
