@@ -345,7 +345,7 @@ const EditGoalItem = ({navigation, route}) => {
                   alignItems: 'center',
                 }}>
                 <Slider
-                  value={slider}
+                  value={0} //slider value
                   step={10}
                   onValueChange={setSlider}
                   style={{width: '90%', height: 40}}
