@@ -1,16 +1,28 @@
-import {Platform} from 'react-native';
+import users from './src/api/users';
+import {BACK_URL} from '@env';
 
-export const createFormData = async (photo, body = {}) => {
+export const handleFile = async file => {
+  const privateUrl = `users/avatar/${file.fileName}`;
+  await users.uploadImage(createFormData(file));
+
+  return {
+    name: file.fileName,
+    sizeInBytes: file.fileSize,
+    privateUrl,
+    publicUrl: `${BACK_URL}/api/file/download?privateUrl=${privateUrl}`,
+    new: true,
+  };
+};
+
+const createFormData = photo => {
   const data = new FormData();
 
-  data.append('file', {
-    name: photo.fileName,
-    type: photo.type,
-    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-  });
   data.append('filename', photo.fileName);
-
-  console.log(data);
+  data.append('file', {
+    uri: photo.uri,
+    type: photo.type,
+    name: photo.fileName,
+  });
 
   return data;
 };

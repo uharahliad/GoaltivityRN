@@ -17,10 +17,9 @@ import {Controller, useForm} from 'react-hook-form';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {Appbar, Avatar} from 'react-native-paper';
-import users from '../../api/users';
+import {Avatar} from 'react-native-paper';
 import {editUser} from '../../redux/thunks/user';
-import {createFormData} from '../../../helpers';
+import {createFormData, handleFile} from '../../../helpers';
 
 function useStyles() {
   return StyleSheet.create({
@@ -111,6 +110,7 @@ const SizedBox = ({height, width}) => {
 const EditProfile = ({navigation}) => {
   const [image, setImage] = useState('');
   const [label, setLabel] = useState('');
+  const [avatar, setAvatar] = useState(null);
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
 
@@ -133,16 +133,13 @@ const EditProfile = ({navigation}) => {
   }, [user]);
 
   const onSubmit = async data => {
-    // const pictureData = new FormData();
-    // pictureData.append('file', image.assets[0]);
-
     const updatedUser = {
       firstName: data.firstName,
       lastName: data.lastName,
       phoneNumber: data.phoneNumber,
       email: data.email,
       bio: data.bio,
-      avatar: image ? image.assets[0].uri : '',
+      avatar: avatar ? [avatar] : user.avatar,
     };
 
     dispatch(editUser(updatedUser)).then(() => {
@@ -151,17 +148,21 @@ const EditProfile = ({navigation}) => {
   };
   const loadImage = async () => {
     try {
-      const newImage = await launchImageLibrary();
+      const newImage = await launchImageLibrary({
+        mediaType: 'photo',
+        maxHeight: 200,
+        maxWidth: 200,
+        selectionLimit: 1,
+        quality: 0.5,
+      });
       if (newImage.assets.length) {
-        const imgUri = await users.uploadImage(
-          createFormData(newImage.assets[0]),
-        );
-
-        console.log('IMG URI test', imgUri);
         setImage(newImage);
+
+        const newAvatar = await handleFile(newImage.assets[0]);
+        setAvatar(newAvatar);
       }
     } catch (e) {
-      console.log('Failed to get img uri', e);
+      console.log('Failed to get img', e.response);
     }
   };
 

@@ -8,7 +8,6 @@ const users = {
     return await axios.delete(`users/${id}`);
   },
   updateUser: async (data, userId) => {
-    console.log(111111, data);
     return await axios.put(`users/${userId}`, data);
   },
   uploadImage: async data => {
@@ -16,6 +15,7 @@ const users = {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
+      transformRequest: data => data,
     });
   },
 };
