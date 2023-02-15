@@ -9,6 +9,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import actionItems from '../../../api/actionItems';
 import {useNavigation} from '@react-navigation/native';
+import {getIconColor} from '../../../../helpers';
 
 const GoalActionItems = ({goal}) => {
   const [week, setWeek] = useState(null);
@@ -123,7 +124,10 @@ const GoalActionItems = ({goal}) => {
                 <View
                   style={{
                     borderWidth: 0.5,
-                    borderColor: item ? '#8DC63F' : null,
+                    borderColor:
+                      item.status.name !== 'In Progress'
+                        ? '#8DC63F'
+                        : '#FFFFFF',
                     backgroundColor:
                       item.status.name === 'Done'
                         ? '#8DC63F'
@@ -139,16 +143,11 @@ const GoalActionItems = ({goal}) => {
                   <Icon
                     name={item ? 'flag' : 'info'}
                     size={26}
-                    color={
-                      item.status.name === 'To Do'
-                        ? '#8DC63F'
-                        : item.status.name === 'In Progress'
-                        ? '#FB9623'
-                        : 'white'
-                    }
+                    color={getIconColor(item.status.name)}
                   />
                 </View>
-                <View style={{marginLeft: 7, alignSelf: 'center'}}>
+                <View
+                  style={{marginLeft: 7, alignSelf: 'center', width: '70%'}}>
                   <Text
                     style={{
                       fontSize: 14,
@@ -163,7 +162,6 @@ const GoalActionItems = ({goal}) => {
                       fontSize: 12,
                       lineHeight: 16,
                       color: '#AAA9A8',
-                      width: '80%',
                     }}>
                     {item
                       ? item.status.name.toUpperCase()

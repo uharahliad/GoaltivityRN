@@ -26,3 +26,13 @@ const createFormData = photo => {
 
   return data;
 };
+
+export const getIconColor = status => {
+  switch (status) {
+    case 'To Do':
+      return '#8DC63F';
+    case 'Done':
+    case 'In Progress':
+      return '#FFFFFF';
+  }
+};
