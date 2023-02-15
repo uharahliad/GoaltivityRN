@@ -19,7 +19,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {Avatar} from 'react-native-paper';
 import {editUser} from '../../redux/thunks/user';
-import {createFormData, handleFile} from '../../../helpers';
+import {createFormData, fixImgUri, handleFile} from '../../../helpers';
 
 function useStyles() {
   return StyleSheet.create({
@@ -209,7 +209,9 @@ const EditProfile = ({navigation}) => {
                   <TouchableOpacity
                     onPress={loadImage}
                     style={{alignSelf: 'center'}}>
-                    <Avatar.Image source={{uri: user.avatar[0].publicUrl}} />
+                    <Avatar.Image
+                      source={{uri: fixImgUri(user.avatar[0].publicUrl)}}
+                    />
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity

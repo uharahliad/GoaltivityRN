@@ -27,6 +27,14 @@ const createFormData = photo => {
   return data;
 };
 
+export const fixImgUri = uri => {
+  if (uri.includes(BACK_URL)) {
+    return uri;
+  } else {
+    return `${BACK_URL}${uri}`;
+  }
+};
+
 export const getIconColor = status => {
   switch (status) {
     case 'To Do':

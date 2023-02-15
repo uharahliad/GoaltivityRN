@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 import {Avatar} from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import {fixImgUri} from '../../../helpers';
 
 const UserProfile = ({navigation, route}) => {
   const user = useSelector(state => state.auth.user);
@@ -42,7 +43,9 @@ const UserProfile = ({navigation, route}) => {
                 marginLeft: 15,
               }}>
               {user.avatar && user.avatar.length ? (
-                <Avatar.Image source={{uri: user.avatar[0].publicUrl}} />
+                <Avatar.Image
+                  source={{uri: fixImgUri(user.avatar[0].publicUrl)}}
+                />
               ) : (
                 <Avatar.Text
                   style={{
