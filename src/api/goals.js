@@ -10,8 +10,8 @@ const goals = {
   createGoal: async data => {
     return await axios.post('goals', data);
   },
-  updateGoal: async (data, token, id) => {
-    return await axios.put(`goals/${id}`, data);
+  updateGoal: async (goalId, data) => {
+    return await axios.put(`goals/${goalId}`, data);
   },
   deleteGoal: async (token, id) => {
     return await axios.delete(`goals/${id}`);

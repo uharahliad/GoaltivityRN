@@ -109,7 +109,7 @@ const EditGoalItem = ({navigation, route}) => {
   const [endDate, setEndDate] = useState(new Date(goal.end_date));
   const [dateOpen, setDateOpen] = useState(false);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState([goal.category.name] || []);
+  const [value, setValue] = useState(goal.category.id);
   const [criteria, setCriteria] = useState('');
   const [dataCriteria, setDataCriteria] = useState(null);
   const [criteriaItems, setCriteriaItems] = useState([]);
@@ -130,9 +130,9 @@ const EditGoalItem = ({navigation, route}) => {
         const res = await goalCategories.getGoalCategories();
         const data = res.data.rows.map(el => ({
           label: el.name,
-          value: el.name,
+          value: el.id,
         }));
-        console.log(111, data);
+
         setItems(data);
       } catch (error) {
         console.log('Error goals: ', error);
@@ -221,45 +221,42 @@ const EditGoalItem = ({navigation, route}) => {
     ]);
   }, [goal]);
 
-  useEffect(() => {
-    const getCriteria = async () => {
-      const token = await EncryptedStorage.getItem('token');
-      const criteriaData = await successCriteria.getSuccessCriteriaItemByGoalId(
-        token,
-        goal.id,
-      );
-      setDataCriteria(criteriaData.data);
-      setCriteriaItems(
-        criteriaData.data.map(item => {
-          return {successCriteria: item.name, value: item.name};
-        }),
-      );
-    };
-    getCriteria();
-  }, []);
+  // useEffect(() => {
+  //   const getCriteria = async () => {
+  //     const token = await EncryptedStorage.getItem('token');
+  //     const criteriaData = await successCriteria.getSuccessCriteriaItemByGoalId(
+  //       token,
+  //       goal.id,
+  //     );
+  //     setDataCriteria(criteriaData.data);
+  //     setCriteriaItems(
+  //       criteriaData.data.map(item => {
+  //         return {successCriteria: item.name, value: item.name};
+  //       }),
+  //     );
+  //   };
+  //   getCriteria();
+  // }, []);
 
   const onSubmit = async data => {
-    const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      const updateGoal = await goals.updateGoal(
-        {
-          data: {
-            name: data.goalName,
-            status: `${slider}`,
-            goalCategory: {name: value[0]},
-            author: currentUser.email,
-            award: data.award,
-            reason: data.reason,
-            startDate,
-            endDate,
-          },
+      await goals.updateGoal(goal.id, {
+        data: {
+          name: data.goalName,
+          // status: `${slider}`,
+          category: value,
+          author: goal.author.id,
+          award: data.award,
+          reason: data.reason,
+          start_date: startDate,
+          end_date: endDate,
         },
-        currentUser.token,
-        goal.id,
-      );
+        id: goal.id,
+      });
+
       navigation.navigate('Home');
     } catch (e) {
-      console.log(e);
+      console.log(e.response);
       Alert.alert(e.message);
     }
   };
@@ -426,16 +423,11 @@ const EditGoalItem = ({navigation, route}) => {
                             value={props.field.value}
                             // label="Goal Name"
                             placeholder="Goal Name"
-                            placeholderTextColor="#797776"
-                            autoCapitalize="none"
-                            autoCompleteType="email"
-                            autoCorrect={false}
-                            keyboardType="email-address"
+                            placeholderTextColor={'#797776'}
                             underlineColor="0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF"
                             activeUnderlineColor="#797776"
                             mode="flat"
                             onChangeText={text => props.field.onChange(text)}
-                            textContentType="username"
                             style={{
                               backgroundColor:
                                 '0deg,rgba(56, 92, 169, 0.05), rgba(56, 92, 169, 0.05)), #FAFCFF',
@@ -561,7 +553,7 @@ const EditGoalItem = ({navigation, route}) => {
                       fontWeight: '400',
                       marginBottom: 8,
                     }}>
-                    Goal Name
+                    Category
                   </Text>
                   <Picker
                     selectedValue={value}
@@ -927,142 +919,6 @@ const EditGoalItem = ({navigation, route}) => {
                           ))}
                       </>
                     ))}
-                  {/* {actionItems
-                      .filter(item => item.length)
-                      .filter(
-                        actionItemData => goal.id === actionItemData[0].goalId,
-                      )
-                      .map(item => (
-                        <View key={item[0].id}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-between',
-                            }}>
-                            <Text
-                              style={{
-                                padding: 10,
-                                marginLeft: 10,
-                                fontWeight: '500',
-                                fontSize: 16,
-                                lineHeight: 24,
-                                color: '#1F1C1B',
-                              }}>
-                              {item[0].week}
-                            </Text>
-                            <Text
-                              style={{
-                                alignSelf: 'center',
-                                padding: 10,
-                                marginLeft: 10,
-                                fontWeight: '500',
-                                fontSize: 11,
-                                lineHeight: 16,
-                                color: '#797776',
-                              }}>
-                              {
-                                weeks.find(
-                                  weekItem => weekItem.value === item[0].week,
-                                ).label
-                              }
-                            </Text>
-                          </View>
-                          <TouchableOpacity
-                            onPress={() =>
-                              navigation.navigate('EditActionItem', {
-                                actionItem: item[0],
-                                goal: goal,
-                              })
-                            }
-                            style={{
-                              height: 65,
-                              width: '90%',
-                              // alignItems: 'center',
-                              alignSelf: 'center',
-                              borderWidth: 1,
-                              borderColor: 'grey',
-                              borderRadius: 12,
-                              justifyContent: 'space-between',
-                              flexDirection: 'row',
-                            }}>
-                            <View style={{flexDirection: 'row'}}>
-                              <View
-                                style={{
-                                  height: 25,
-                                  width: 25,
-                                  alignSelf: 'center',
-                                  alignItems: 'center',
-                                  borderColor:
-                                    item[0].status === 'toDo'
-                                      ? '#8DC63F'
-                                      : null,
-                                  borderWidth:
-                                    item[0].status === 'toDo' ? 1 : 0,
-                                  backgroundColor:
-                                    item[0].status === 'Done'
-                                      ? '#8DC63F'
-                                      : item[0].status === 'inProgress'
-                                      ? '#FB9623'
-                                      : 'white',
-                                  borderRadius: 8,
-                                  marginLeft: 12,
-                                  justifyContent: 'center',
-                                }}>
-                                <Icon
-                                  name="flag"
-                                  color={
-                                    item[0].status === 'toDo'
-                                      ? '#8DC63F'
-                                      : item[0].status === 'inProgress'
-                                      ? 'white'
-                                      : '#FB9623'
-                                  }
-                                  size={16}
-                                />
-                              </View>
-                              <Text
-                                style={{
-                                  alignSelf: 'center',
-                                  marginLeft: 8,
-                                  color: '#3C3939',
-                                }}>
-                                {item[0].name}
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                height: 25,
-                                width: 25,
-                                alignSelf: 'center',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                backgroundColor:
-                                  item[0].status === 'Done'
-                                    ? '#8DC63F'
-                                    : item[0].status === 'inProgress'
-                                    ? '#FB9623'
-                                    : 'white',
-                                borderRadius: 16,
-                                marginRight: 12,
-                              }}>
-                              {item[0].status === 'Done' ? (
-                                <Icon name="check" color="white" size={20} />
-                              ) : item[0].status === 'inProgress' ? (
-                                <Icon
-                                  onPress={async () =>
-                                    await handleDeleteActionItem(item[0])
-                                  }
-                                  name="close"
-                                  color="white"
-                                  size={20}
-                                />
-                              ) : (
-                                <Icon name="radio-button-unchecked" size={20} />
-                              )}
-                            </View>
-                          </TouchableOpacity>
-                        </View>
-                      ))} */}
                 </ScrollView>
               )}
             </View>
