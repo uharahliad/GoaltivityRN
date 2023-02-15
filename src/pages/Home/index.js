@@ -1,17 +1,12 @@
 import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Dimensions,
-} from 'react-native';
+import {View, Text, FlatList, TouchableOpacity, Dimensions} from 'react-native';
 import {useFocusEffect} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import PercentageCircle from 'react-native-percentage-circle';
 import {useDispatch, useSelector} from 'react-redux';
 import {getGoals} from '../../redux/thunks/goals';
 import GoalActionItems from './components/GoalActionItems';
+import {setSelectedGoal} from '../../redux/reducers/goalsSlice';
 
 const Home = ({navigation}) => {
   const [index, setIndex] = useState(0);
@@ -56,6 +51,15 @@ const Home = ({navigation}) => {
     if (index <= goalsData.length - 1) {
       slidesRef.current.scrollToIndex({index: index - 1});
     }
+  };
+
+  const onUpdatePress = goal => {
+    dispatch(setSelectedGoal(goal.id));
+    navigation.navigate('EditGoalItem', {
+      actionItems: goal.actionItems,
+      goal,
+      length: goalsData.length,
+    });
   };
 
   return (
@@ -189,14 +193,7 @@ const Home = ({navigation}) => {
                         }}>
                         {item.name}
                       </Text>
-                      <TouchableOpacity
-                        onPress={() =>
-                          navigation.navigate('EditGoalItem', {
-                            actionItems: item.actionItems,
-                            goal: item,
-                            length: goalsData.length,
-                          })
-                        }>
+                      <TouchableOpacity onPress={() => onUpdatePress(item)}>
                         <Text
                           style={{
                             textAlign: 'center',

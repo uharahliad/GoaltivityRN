@@ -22,6 +22,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
+import {getIconColor} from '../../../helpers';
+import {useSelector} from 'react-redux';
 
 function useStyles() {
   return StyleSheet.create({
@@ -102,7 +104,8 @@ const SizedBox = ({height, width}) => {
 };
 
 const EditGoalItem = ({navigation, route}) => {
-  const {goal, length, actionItems} = route.params;
+  const {length, actionItems} = route.params;
+  const goal = useSelector(state => state.goals.selectedGoal);
   const [weeks, setWeeks] = useState(null);
   const [pressed, setPressed] = useState({details: true, items: false});
   const [startDate, setStartDate] = useState(new Date(goal.start_date));
@@ -299,8 +302,8 @@ const EditGoalItem = ({navigation, route}) => {
   };
 
   const handleDeleteActionItem = async action => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteActionItem = await actionItems.deleteActionItem(action.id);
+    // const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+    // const deleteActionItem = await actionItems.deleteActionItem(action.id);
   };
   const styles = useStyles();
 
@@ -760,111 +763,100 @@ const EditGoalItem = ({navigation, route}) => {
               ) : (
                 <ScrollView style={{height: Dimensions.get('screen').height}}>
                   {weeks
-                    .filter(week => {
-                      return actionItems.find(item => {
-                        if (item.length) {
-                          return item.find(inner => inner.week === week.value);
-                        }
-                      });
-                    })
-                    .map(weeklyItem => (
-                      <>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                          }}>
-                          <Text
+                    .map(week => ({
+                      ...week,
+                      actionItems: goal.actionItemsData.filter(
+                        action => action.week === week.value,
+                      ),
+                    }))
+                    .map(weeklyItem =>
+                      weeklyItem.actionItems.length ? (
+                        <View key={weeklyItem.value}>
+                          <View
                             style={{
-                              padding: 10,
-                              marginLeft: 10,
-                              fontWeight: '500',
-                              fontSize: 16,
-                              lineHeight: 24,
-                              color: '#1F1C1B',
+                              flexDirection: 'row',
+                              justifyContent: 'space-between',
+                              paddingHorizontal: 10,
                             }}>
-                            {weeklyItem.value}
-                          </Text>
-                          <Text
-                            style={{
-                              alignSelf: 'center',
-                              padding: 10,
-                              marginLeft: 10,
-                              fontWeight: '500',
-                              fontSize: 11,
-                              lineHeight: 16,
-                              color: '#797776',
-                            }}>
-                            {weeklyItem.label}
-                          </Text>
-                        </View>
-                        {actionItems
-                          .filter(item => item.length)
-                          .filter(
-                            (actionItemData, i) => {
-                              return actionItemData
-                                .filter(item => goal.id === item.goalId)
-                                .filter(item => {
-                                  return weeklyItem.value === item.week;
-                                });
-                            },
-                            // goal.id === actionItemData[i].goalId &&
-                            // actionItemData[i].week === weeklyItem.value,
-                          )[0]
-                          .filter(item => weeklyItem.value === item.week)
-                          .map((item, i) => (
-                            <View key={item.id}>
+                            <Text
+                              style={{
+                                padding: 10,
+                                fontWeight: '500',
+                                fontSize: 16,
+                                lineHeight: 24,
+                                color: '#1F1C1B',
+                              }}>
+                              {weeklyItem.value}
+                            </Text>
+                            <Text
+                              style={{
+                                alignSelf: 'center',
+                                padding: 10,
+                                marginLeft: 10,
+                                fontWeight: '500',
+                                fontSize: 11,
+                                lineHeight: 16,
+                                color: '#797776',
+                              }}>
+                              {weeklyItem.label}
+                            </Text>
+                          </View>
+                          <View>
+                            {weeklyItem.actionItems.map(item => (
+                              // <View key={item.id}>
                               <TouchableOpacity
+                                key={item.id}
                                 onPress={() =>
                                   navigation.navigate('EditActionItem', {
                                     actionItem: item,
-                                    goal: goal,
+                                    goal,
                                   })
                                 }
                                 style={{
-                                  height: 50,
-                                  width: '90%',
-                                  // alignItems: 'center',
                                   alignSelf: 'center',
-                                  borderWidth: 1,
-                                  borderColor: 'grey',
-                                  borderRadius: 12,
-                                  justifyContent: 'space-between',
+                                  width: '90%',
+                                  height: 70,
+                                  backgroundColor: 'white',
                                   flexDirection: 'row',
+                                  alignItems: 'center',
+                                  padding: 12,
+                                  justifyContent: 'space-between',
+                                  borderRadius: 16,
+                                  marginBottom: 8,
+                                  shadowColor: '#000',
+                                  shadowOffset: {
+                                    width: 0,
+                                    height: 1,
+                                  },
+                                  shadowOpacity: 0.22,
+                                  shadowRadius: 2.22,
+
+                                  elevation: 3,
                                 }}>
                                 <View style={{flexDirection: 'row'}}>
                                   <View
                                     style={{
-                                      height: 25,
-                                      width: 25,
-                                      alignSelf: 'center',
-                                      alignItems: 'center',
+                                      borderWidth: 0.5,
                                       borderColor:
-                                        item.status === 'toDo'
+                                        item.status.name !== 'In Progress'
                                           ? '#8DC63F'
-                                          : null,
-                                      borderWidth:
-                                        item.status === 'toDo' ? 1 : 0,
+                                          : '#FFFFFF',
                                       backgroundColor:
-                                        item.status === 'done'
+                                        item.status.name === 'Done'
                                           ? '#8DC63F'
-                                          : item.status === 'inProgress'
+                                          : item.status.name === 'In Progress'
                                           ? '#FB9623'
                                           : 'white',
-                                      borderRadius: 8,
-                                      marginLeft: 12,
+                                      borderRadius: 10,
+                                      width: 40,
+                                      height: 40,
+                                      alignItems: 'center',
                                       justifyContent: 'center',
                                     }}>
                                     <Icon
-                                      name="flag"
-                                      color={
-                                        item.status === 'toDo'
-                                          ? '#8DC63F'
-                                          : item.status === 'inProgress'
-                                          ? '#FB9623'
-                                          : 'white'
-                                      }
-                                      size={16}
+                                      name={item ? 'flag' : 'info'}
+                                      size={26}
+                                      color={getIconColor(item.status.name)}
                                     />
                                   </View>
                                   <Text
@@ -884,21 +876,21 @@ const EditGoalItem = ({navigation, route}) => {
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     backgroundColor:
-                                      item.status === 'done'
+                                      item.status.name === 'Done'
                                         ? '#8DC63F'
-                                        : item.status === 'inProgress'
+                                        : item.status.name === 'In Progress'
                                         ? '#FB9623'
                                         : 'white',
                                     borderRadius: 16,
                                     marginRight: 12,
                                   }}>
-                                  {item.status === 'done' ? (
+                                  {item.status.name === 'Done' ? (
                                     <Icon
                                       name="check"
                                       color="white"
                                       size={20}
                                     />
-                                  ) : item.status === 'inProgress' ? (
+                                  ) : item.status.name === 'In Progress' ? (
                                     <Icon
                                       onPress={async () =>
                                         await handleDeleteActionItem(item)
@@ -915,10 +907,12 @@ const EditGoalItem = ({navigation, route}) => {
                                   )}
                                 </View>
                               </TouchableOpacity>
-                            </View>
-                          ))}
-                      </>
-                    ))}
+                              // </View>
+                            ))}
+                          </View>
+                        </View>
+                      ) : null,
+                    )}
                 </ScrollView>
               )}
             </View>

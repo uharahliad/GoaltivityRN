@@ -15,7 +15,7 @@ import {
 import {Portal, Modal} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import actionItems from '../../api/actionItems';
 import {Picker} from '@react-native-picker/picker';
@@ -302,7 +302,7 @@ const EditActionItem = ({navigation, route}) => {
       if (statuses.find(el => el.value === statusValue).label === 'Done') {
         showModal();
       } else {
-        navigation.goBack();
+        navigation.navigate('Home');
       }
     } catch (e) {
       console.log(e);
