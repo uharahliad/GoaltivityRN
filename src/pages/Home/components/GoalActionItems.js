@@ -108,6 +108,7 @@ const GoalActionItems = ({goal}) => {
                 padding: 12,
                 justifyContent: 'space-between',
                 borderRadius: 16,
+                marginBottom: 8,
                 shadowColor: '#000',
                 shadowOffset: {
                   width: 0,
