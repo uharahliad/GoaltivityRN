@@ -447,7 +447,7 @@ const AddGoalItem = ({navigation}) => {
                   color: '#1F1C1B',
                   fontWeight: '400',
                 }}>
-                {'Success Criteria(optional)'}
+                Success Criteria (optional)
               </Text>
 
               <Pressable onPress={target => target.current?.focus()}>
@@ -478,19 +478,28 @@ const AddGoalItem = ({navigation}) => {
                 </View>
               </Pressable>
               <SizedBox height={5} />
-              <View style={{flexDirection: 'row'}}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  flexWrap: 'wrap',
+                  paddingHorizontal: 10,
+                }}>
                 {!!criteriaItems &&
                   criteriaItems.map((item, i) => (
                     <View
                       key={i}
                       style={{
                         marginLeft: 10,
+                        marginTop: 5,
                         flexDirection: 'row',
+                        alignItems: 'center',
                         backgroundColor: 'lightgrey',
                         borderRadius: 5,
-                        alignItems: 'center',
+                        padding: 4,
                       }}>
-                      <Text>{item.value}</Text>
+                      <Text style={{textTransform: 'capitalize'}}>
+                        {item.value}
+                      </Text>
                       <TouchableOpacity onPress={() => handleClick(item)}>
                         <Icon name="close" size={23} />
                       </TouchableOpacity>
