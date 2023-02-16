@@ -111,10 +111,8 @@ const EditGoalItem = ({navigation, route}) => {
   const [startDate, setStartDate] = useState(new Date(goal.start_date));
   const [endDate, setEndDate] = useState(new Date(goal.end_date));
   const [dateOpen, setDateOpen] = useState(false);
-  const [open, setOpen] = useState(false);
   const [value, setValue] = useState(goal.category.id);
   const [criteria, setCriteria] = useState('');
-  const [dataCriteria, setDataCriteria] = useState(null);
   const [criteriaItems, setCriteriaItems] = useState([]);
   const [slider, setSlider] = useState(Number(goal.status));
   const [items, setItems] = useState([]);
@@ -224,22 +222,19 @@ const EditGoalItem = ({navigation, route}) => {
     ]);
   }, [goal]);
 
-  // useEffect(() => {
-  //   const getCriteria = async () => {
-  //     const token = await EncryptedStorage.getItem('token');
-  //     const criteriaData = await successCriteria.getSuccessCriteriaItemByGoalId(
-  //       token,
-  //       goal.id,
-  //     );
-  //     setDataCriteria(criteriaData.data);
-  //     setCriteriaItems(
-  //       criteriaData.data.map(item => {
-  //         return {successCriteria: item.name, value: item.name};
-  //       }),
-  //     );
-  //   };
-  //   getCriteria();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      try {
+        const criteriaData = await successCriteria.getCriteriaItemsByGoalId(
+          goal.id,
+        );
+        console.log('DD', criteriaData.data.rows.map);
+        setCriteriaItems(criteriaData.data.rows.map(el => el.name));
+      } catch (e) {
+        console.log('Error fetching criterias: ', e);
+      }
+    })();
+  }, [goal.id]);
 
   const onSubmit = async data => {
     try {
@@ -263,42 +258,24 @@ const EditGoalItem = ({navigation, route}) => {
       Alert.alert(e.message);
     }
   };
-  const onSubmitEditing = async () => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
+  const onSubmitEditing = () => {
     if (criteria) {
-      const newSuccessCriteria =
-        await successCriteria.createSuccessCriteriaItem(
-          {criteria, goal: goal.id},
-          userData.token,
-        );
-      setCriteriaItems(current => [
-        ...current,
-        {successCriteria: criteria, value: criteria},
-      ]);
+      setCriteriaItems(prevState => [...prevState, criteria]);
       setCriteria('');
     } else {
       Alert.alert('Cannot add emtpy value');
     }
   };
-  const handleClick = async data => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deletedItem = [...dataCriteria].filter(
-      item => item.name === data.value,
-    );
-    const deleteSuccessCriteria = await successCriteria.deleteSuccessCriteria(
-      userData.token,
-      deletedItem[0].id,
-    );
-    setCriteriaItems(current =>
-      current.filter(obj => {
-        return obj.value !== data.value;
-      }),
-    );
+  const removeCriteria = data => {
+    setCriteriaItems(prevState => prevState.filter(el => el !== data));
   };
   const handleDelete = async () => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    const deleteGoal = await goals.deleteGoal(userData.token, goal.id);
-    navigation.navigate('Home');
+    try {
+      await goals.deleteGoal(goal.id);
+      // navigation.navigate('Home');
+    } catch (e) {
+      console.log('Error deleting goal', e.response);
+    }
   };
 
   const handleDeleteActionItem = async action => {
@@ -670,21 +647,28 @@ const EditGoalItem = ({navigation, route}) => {
                     </View>
                   </Pressable>
                   <SizedBox height={5} />
-                  <View style={{flexDirection: 'row'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flexWrap: 'wrap',
+                      paddingHorizontal: 10,
+                    }}>
                     {!!criteriaItems &&
                       criteriaItems.map((item, i) => (
                         <View
                           key={i}
                           style={{
                             marginLeft: 10,
+                            marginTop: 5,
                             flexDirection: 'row',
+                            alignItems: 'center',
                             backgroundColor: 'lightgrey',
                             borderRadius: 5,
-                            alignItems: 'center',
+                            padding: 4,
                           }}>
-                          <Text>{item.value}</Text>
+                          <Text>{item}</Text>
                           <TouchableOpacity
-                            onPress={async () => await handleClick(item)}>
+                            onPress={() => removeCriteria(item)}>
                             <Icon name="close" size={23} />
                           </TouchableOpacity>
                         </View>

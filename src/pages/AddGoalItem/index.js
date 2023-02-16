@@ -19,6 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Picker} from '@react-native-picker/picker';
+import successCriteria from '../../api/successCriteria';
 
 function useStyles() {
   return StyleSheet.create({
@@ -145,16 +146,6 @@ const AddGoalItem = ({navigation}) => {
 
   const onSubmit = async data => {
     try {
-      console.log({
-        author: user.id,
-        name: data.goalName,
-        category: value, //category id
-        award: data.award,
-        reason: data.reason,
-        start_date: startDate,
-        end_date: endDate,
-      });
-
       const newGoal = await goals.createGoal({
         data: {
           author: user.id,
@@ -166,35 +157,37 @@ const AddGoalItem = ({navigation}) => {
           end_date: endDate,
         },
       });
-      console.log('Created new goal', newGoal);
+
+      if (criteriaItems.length > 0) {
+        await successCriteria.createCriteriaItems({
+          data: {
+            name: criteriaItems,
+            goal: newGoal.data.id,
+          },
+        });
+      }
+
       navigation.navigate('Home');
     } catch (e) {
-      console.log('Error', e);
+      console.log('Error creating goal: ', e);
       Alert.alert(e.message);
     }
   };
   const onSubmitEditing = () => {
     if (criteria) {
-      setCriteriaItems(current => [
-        ...current,
-        {successCriteria: criteria, value: criteria},
-      ]);
+      setCriteriaItems(prevState => [...prevState, criteria]);
       setCriteria('');
     } else {
       Alert.alert('Cannot add emtpy value');
     }
   };
-  const handleClick = data => {
-    setCriteriaItems(current =>
-      current.filter(obj => {
-        return obj.value !== data.value;
-      }),
-    );
+  const removeCriteria = data => {
+    setCriteriaItems(prevState => prevState.filter(el => el !== data));
   };
+
   const styles = useStyles();
 
   return (
-    // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
     <View style={styles.root}>
       <SafeAreaView style={styles.safeAreaView}>
         <KeyboardAvoidingView
@@ -497,10 +490,8 @@ const AddGoalItem = ({navigation}) => {
                         borderRadius: 5,
                         padding: 4,
                       }}>
-                      <Text style={{textTransform: 'capitalize'}}>
-                        {item.value}
-                      </Text>
-                      <TouchableOpacity onPress={() => handleClick(item)}>
+                      <Text style={{textTransform: 'capitalize'}}>{item}</Text>
+                      <TouchableOpacity onPress={() => removeCriteria(item)}>
                         <Icon name="close" size={23} />
                       </TouchableOpacity>
                     </View>
@@ -582,7 +573,6 @@ const AddGoalItem = ({navigation}) => {
         </KeyboardAvoidingView>
       </SafeAreaView>
     </View>
-    // </TouchableWithoutFeedback>
   );
 };
 

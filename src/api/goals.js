@@ -13,7 +13,7 @@ const goals = {
   updateGoal: async (goalId, data) => {
     return await axios.put(`goals/${goalId}`, data);
   },
-  deleteGoal: async (token, id) => {
+  deleteGoal: async id => {
     return await axios.delete(`goals/${id}`);
   },
 };

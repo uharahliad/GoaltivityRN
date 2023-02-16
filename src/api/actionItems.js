@@ -1,7 +1,7 @@
 import axios from './axios';
 
 const actionItems = {
-  createActionItem: async (data) => {
+  createActionItem: async data => {
     return await axios.post('action_items', data);
   },
   register: async data => {
