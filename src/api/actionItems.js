@@ -1,39 +1,23 @@
-import axios from 'axios';
-import {BACK_URL} from '@env';
-
-console.log(BACK_URL, 1);
+import axios from './axios';
 
 const actionItems = {
-  createActionItem: async (data, token) => {
-    return await axios.post(BACK_URL + '/api/action_items', data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  createActionItem: async data => {
+    return await axios.post('action_items', data);
   },
   register: async data => {
-    return await axios.post(BACK_URL + '/api/action_items', data);
+    return await axios.post('action_items', data);
   },
-  getActionItems: async (token, goalId) => {
-    return await axios.get(BACK_URL + `/api/action_items/${goalId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getActionItems: async goalId => {
+    return await axios.get(`action_items/goal/${goalId}`);
   },
-  updateActionItem: async (token, data, id) => {
-    return await axios.put(BACK_URL + `/api/action_items/${id}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  updateActionItem: async (data, id) => {
+    return await axios.put(`action_items/${id}`, {data});
   },
-  deleteActionItem: async (token, id) => {
-    return await axios.delete(BACK_URL + `/api/action_items/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  deleteActionItem: async id => {
+    return await axios.delete(`action_items/${id}`);
+  },
+  getStatuses: async () => {
+    return await axios.get('statuses');
   },
 };
 

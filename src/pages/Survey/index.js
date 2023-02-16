@@ -1,25 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  Image,
-  Dimensions,
 } from 'react-native';
-import {RadioButton} from 'react-native-paper';
 import TypeformEmbed from 'react-native-typeform-embed';
-import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
-import EncryptedStorage from 'react-native-encrypted-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {getMe} from '../../redux/thunks/auth';
 
 function useStyles() {
   return StyleSheet.create({
@@ -109,28 +100,18 @@ const SizedBox = ({height, width}) => {
   return <View style={{height, width}} />;
 };
 
-const Survey = ({navigation}) => {
-  const [user, setUser] = useState(null);
+const Survey = ({navigation, route}) => {
   const [link, setLink] = useState('');
-  const styles = useStyles();
+  const email = route.params.email;
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-  //     console.log(userData)
-  //     setUser(userData);
-  //   };
-  //   getUser();
-  // }, []);
+  const styles = useStyles();
 
   useEffect(() => {
-    if (user !== null) {
-      setLink(
-        `https://upw1dt0t8rq.typeform.com/to/MztHIo9Z#email=${user.email}`,
-      );
+    if (email) {
+      setLink(`https://upw1dt0t8rq.typeform.com/to/MztHIo9Z#email=${email}`);
     }
-  }, [user]);
+  }, [email]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -140,37 +121,11 @@ const Survey = ({navigation}) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.content}>
             <TypeformEmbed
-              useWebView2={true}
+              // useWebView2={true}
               url={link}
-              onSubmit={() => navigation.navigate('SignIn')}
+              onSubmit={() => dispatch(getMe())}
               hidden={{email: 'john@example.com'}}
             />
-            {/* <Image
-              style={styles.logo}
-              source={require('D:/goals/Goaltivity/assets/BrandStyleGuide_Goaltivity.png')}
-            />
-            <SizedBox height={Dimensions.get('screen').height * 0.04} />
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.title}>This is </Text>
-              <Text style={{...styles.title, fontWeight: '700'}}>
-                about the app
-              </Text>
-            </View>
-            <SizedBox height={Dimensions.get('screen').height * 0.52} />
-            <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-              <View style={styles.button}>
-                <Text style={styles.buttonTitle}>Sign Up</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.forgotPasswordContainer}>
-              <Text style={styles.textButton}>Already have an account? </Text>
-              <SizedBox height={Dimensions.get('screen').height * 0.1} />
-              <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-                <View>
-                  <Text style={styles.loginButtonText}>Sign In</Text>
-                </View>
-              </TouchableOpacity>
-            </View> */}
           </KeyboardAvoidingView>
         </SafeAreaView>
       </View>

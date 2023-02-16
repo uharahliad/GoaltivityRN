@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -9,23 +8,13 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   View,
-  FlatList,
   ScrollView,
 } from 'react-native';
 import {TextInput} from 'react-native-paper';
 import {Controller, useForm} from 'react-hook-form';
-import goals from '../../api/goals';
-import goalCategories from '../../api/goalCategories';
-import successCriteria from '../../api/successCriteria';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
-import DropDownPicker from 'react-native-dropdown-picker';
-import DatePicker from 'react-native-date-picker';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {current} from '@reduxjs/toolkit';
 import actionItems from '../../api/actionItems';
 import {Picker} from '@react-native-picker/picker';
 
@@ -123,8 +112,6 @@ const SizedBox = ({height, width}) => {
 };
 
 const AddActionItem = ({navigation}) => {
-  const [openWeeks, setOpenWeeks] = useState(false);
-  const [open, setOpen] = useState(false);
   const [goalsValue, setGoalsValue] = useState();
   const [weeks, setWeeks] = useState([
     {
@@ -177,27 +164,33 @@ const AddActionItem = ({navigation}) => {
     },
   ]);
   const [weekValue, setWeekValue] = useState(weeks[0].value);
-  const [goalsData, setGoalsData] = useState([]);
   const [goalsSelect, setGoalsSelect] = useState([]);
+  const [statusToDo, setStatusToDo] = useState(null);
+
+  const goalsData = useSelector(state => state.goals.goalsData);
 
   useEffect(() => {
-    const getGoals = async () => {
-      const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-      const allGoals = await goals.getGoals(userData.token, userData.id);
-      setGoalsData(allGoals.data.rows);
-    };
-    getGoals();
+    (async () => {
+      try {
+        const res = await actionItems.getStatuses();
+        const todo = res.data.rows.find(el => el.name === 'To Do');
+
+        setStatusToDo(todo);
+      } catch (e) {
+        console.log('Error fetch status: ', e);
+      }
+    })();
   }, []);
 
   useEffect(() => {
-    if (goalsData) {
+    if (goalsData.length) {
       const goalsSelectData = goalsData.map(item => {
         return {
           label: item.name,
           value: item.id,
         };
       });
-      console.log(goalsSelectData);
+
       if (goalsSelectData.length) {
         setGoalsValue(goalsSelectData[0].value);
       }
@@ -206,7 +199,6 @@ const AddActionItem = ({navigation}) => {
   }, [goalsData]);
 
   useEffect(() => {
-    console.log(goalsValue);
     if (goalsData && goalsValue) {
       const goal = goalsData.filter(item => item.id === goalsValue);
       const startDate = new Date(goal[0].start_date);
@@ -279,9 +271,7 @@ const AddActionItem = ({navigation}) => {
     }
   }, [goalsValue, goalsData]);
 
-  const dispatch = useDispatch();
-
-  const {control, handleSubmit, formState, getValues} = useForm({
+  const {control, handleSubmit} = useForm({
     defaultValues: {
       goalName: '',
       reason: '',
@@ -290,22 +280,19 @@ const AddActionItem = ({navigation}) => {
   });
 
   const onSubmit = async data => {
-    const currentUser = JSON.parse(await EncryptedStorage.getItem('user'));
     try {
-      const newActionItem = await actionItems.createActionItem(
-        {
-          data: {
-            goal: goalsValue,
-            name: data.actionItem,
-            week: weekValue,
-            status: 'toDo',
-          },
+      await actionItems.createActionItem({
+        data: {
+          goal: goalsValue,
+          name: data.actionItem,
+          week: weekValue,
+          status: statusToDo?.id,
         },
-        currentUser.token,
-      );
+      });
+
       navigation.navigate('Home');
     } catch (e) {
-      console.log(e);
+      console.log('Error create action item', e);
       Alert.alert(e.message);
     }
   };

@@ -1,43 +1,20 @@
-import axios from 'axios';
-import {BACK_URL} from '@env';
-
-console.log(BACK_URL, 1);
+import axios from './axios';
 
 const goals = {
-  getGoals: async (token, author) => {
-    return await axios.get(BACK_URL + `/api/goals/${author}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getGoals: async userId => {
+    return await axios.get(`goals/user/${userId}`);
   },
   getGoal: async (token, id) => {
-    return await axios.get(BACK_URL + `/api/goals/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.get(`goals/${id}`);
   },
-  createGoal: async (data, token) => {
-    return await axios.post(BACK_URL + '/api/goals', data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  createGoal: async data => {
+    return await axios.post('goals', data);
   },
-  updateGoal: async (data, token, id) => {
-    return await axios.put(BACK_URL + `/api/goals/${id}`, data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  updateGoal: async (goalId, data) => {
+    return await axios.put(`goals/${goalId}`, data);
   },
-  deleteGoal: async (token, id) => {
-    return await axios.delete(BACK_URL + `/api/goals/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  deleteGoal: async id => {
+    return await axios.delete(`goals/${id}`);
   },
 };
 

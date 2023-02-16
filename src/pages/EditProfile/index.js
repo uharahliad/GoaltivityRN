@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   Keyboard,
   KeyboardAvoidingView,
   Platform,
@@ -11,19 +10,16 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
-  FlatList,
   ScrollView,
   TextInput,
 } from 'react-native';
 import {Controller, useForm} from 'react-hook-form';
-import auth from '../../api/auth';
-import EncryptedStorage from 'react-native-encrypted-storage';
-import {useDispatch} from 'react-redux';
-import {setSignIn} from '../../redux/reducers/signInSlice';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {Appbar, Avatar} from 'react-native-paper';
-import users from '../../api/users';
+import {Avatar} from 'react-native-paper';
+import {editUser} from '../../redux/thunks/user';
+import {createFormData, fixImgUri, handleFile} from '../../../helpers';
 
 function useStyles() {
   return StyleSheet.create({
@@ -111,12 +107,12 @@ const SizedBox = ({height, width}) => {
   return <View style={{height, width}} />;
 };
 
-const EditProfile = ({navigation, route}) => {
-  const {user} = route.params;
-  const [error, setError] = useState('');
+const EditProfile = ({navigation}) => {
   const [image, setImage] = useState('');
   const [label, setLabel] = useState('');
+  const [avatar, setAvatar] = useState(null);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
   const {control, handleSubmit, formState, reset} = useForm({
     defaultValues: {
@@ -129,24 +125,7 @@ const EditProfile = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    reset({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      phoneNumber: user.phoneNumber,
-      email: user.email,
-      bio: user.bio,
-    });
-  }, [
-    reset,
-    user.firstName,
-    user.lastName,
-    user.phoneNumber,
-    user.email,
-    user.bio,
-  ]);
-
-  useEffect(() => {
-    if (user !== null) {
+    if (user) {
       const first = user.firstName ? user.firstName[0] : '';
       const last = user.lastName ? user.lastName[0] : '';
       setLabel(first + last);
@@ -154,42 +133,39 @@ const EditProfile = ({navigation, route}) => {
   }, [user]);
 
   const onSubmit = async data => {
-    const userData = JSON.parse(await EncryptedStorage.getItem('user'));
-    console.log(data, 1111111);
-    // const pictureData = new FormData();
-    // pictureData.append('file', image.assets[0]);
-    const update = await users.updateUser(
-      {
-        firstName: data.firstName,
-        lastName: data.lastName,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        bio: data.bio,
-        avatar: image ? image.assets[0].uri : '',
-      },
-      userData.token,
-      userData.email,
-    );
-    const newUserData = {
-      ...userData,
-      firstName: update.data.firstName,
-      lastName: update.data.lastName,
-      phoneNumber: update.data.phoneNumber,
-      email: update.data.email,
-      bio: update.data.bio,
-      avatar: [{publicUrl: update.data.image}],
+    const updatedUser = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      phoneNumber: data.phoneNumber,
+      email: data.email,
+      bio: data.bio,
+      avatar: avatar ? [avatar] : user.avatar,
     };
-    console.log(update.data,'//////')
-    await EncryptedStorage.setItem('user', JSON.stringify(newUserData));
-    navigation.navigate('Home');
+
+    dispatch(editUser(updatedUser)).then(() => {
+      navigation.goBack();
+    });
   };
   const loadImage = async () => {
-    const newImage = await launchImageLibrary();
-    if (newImage.assets.length) {
-      setImage(newImage);
+    try {
+      const newImage = await launchImageLibrary({
+        mediaType: 'photo',
+        maxHeight: 200,
+        maxWidth: 200,
+        selectionLimit: 1,
+        quality: 0.5,
+      });
+      if (newImage.assets.length) {
+        setImage(newImage);
+
+        const newAvatar = await handleFile(newImage.assets[0]);
+        setAvatar(newAvatar);
+      }
+    } catch (e) {
+      console.log('Failed to get img', e.response);
     }
   };
-  console.log(user);
+
   const styles = useStyles();
 
   return (
@@ -214,7 +190,7 @@ const EditProfile = ({navigation, route}) => {
                   fontWeight: '400',
                   color: '#1D2E54',
                 }}>
-                Edit 12-Week Goal
+                Edit Profile
               </Text>
               <View
                 style={{
@@ -233,7 +209,9 @@ const EditProfile = ({navigation, route}) => {
                   <TouchableOpacity
                     onPress={loadImage}
                     style={{alignSelf: 'center'}}>
-                    <Avatar.Image source={{uri: user.avatar[0].publicUrl}} />
+                    <Avatar.Image
+                      source={{uri: fixImgUri(user.avatar[0].publicUrl)}}
+                    />
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity
@@ -284,6 +262,7 @@ const EditProfile = ({navigation, route}) => {
                             width: '90%',
                             alignSelf: 'center',
                             padding: 10,
+                            color: '#1F1C1B',
                           }}
                         />
                       )}
@@ -332,6 +311,7 @@ const EditProfile = ({navigation, route}) => {
                             width: '90%',
                             alignSelf: 'center',
                             padding: 10,
+                            color: '#1F1C1B',
                           }}
                         />
                       )}
@@ -387,6 +367,7 @@ const EditProfile = ({navigation, route}) => {
                             width: '90%',
                             alignSelf: 'center',
                             padding: 10,
+                            color: '#1F1C1B',
                           }}
                         />
                       )}
@@ -447,6 +428,7 @@ const EditProfile = ({navigation, route}) => {
                             width: '90%',
                             alignSelf: 'center',
                             padding: 10,
+                            color: '#1F1C1B',
                           }}
                         />
                       )}
@@ -500,6 +482,7 @@ const EditProfile = ({navigation, route}) => {
                             width: '90%',
                             alignSelf: 'center',
                             padding: 10,
+                            color: '#1F1C1B',
                           }}
                         />
                       )}

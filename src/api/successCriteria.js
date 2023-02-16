@@ -1,51 +1,24 @@
-import axios from 'axios';
-import {BACK_URL} from '@env';
-
-console.log(BACK_URL, 1);
+import axios from './axios';
 
 const successCriteria = {
   getSuccessCriteria: async token => {
-    return await axios.get(BACK_URL + '/api/success_criteria', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.get('success_criteria');
   },
-  getSuccessCriteriaItem: async (token, id) => {
-    return await axios.get(BACK_URL + `/api/success_criteria/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getSuccessCriteriaItem: async id => {
+    return await axios.get(`success_criteria/${id}`);
   },
-  getSuccessCriteriaItemByGoalId: async (token, id) => {
-    return await axios.get(BACK_URL + `/api/success_criteria/goal/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getCriteriaItemsByGoalId: async id => {
+    return await axios.get(`goals/${id}/success_criteria`);
   },
-  createSuccessCriteriaItems: async (data, token) => {
-    return await axios.post(BACK_URL + '/api/success_criteria', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: data,
-    });
+  createCriteriaItems: async data => {
+    console.log('DD', data);
+    return await axios.post('success_criteria', data);
   },
   createSuccessCriteriaItem: async (data, token) => {
-    return await axios.post(BACK_URL + '/api/success_criteria/one', data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.post('success_criteria/one', data);
   },
   deleteSuccessCriteria: async (token, id) => {
-    return await axios.delete(BACK_URL + `/api/success_criteria/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    return await axios.delete(`success_criteria/${id}`);
   },
 };
 

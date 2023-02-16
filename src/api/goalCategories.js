@@ -1,29 +1,15 @@
-import axios from 'axios';
+import axios from './axios';
 import {BACK_URL} from '@env';
 
-console.log(BACK_URL, 1);
-
 const goalCategories = {
-  getGoalCategories: async token => {
-    return await axios.get(BACK_URL + '/api/goal_categories', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getGoalCategories: async () => {
+    return await axios.get('goal_categories');
   },
-  getGoalCategory: async (token, id) => {
-    return await axios.get(BACK_URL + `/api/goal_categories/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getGoalCategory: async id => {
+    return await axios.get(`goal_categories/${id}`);
   },
-  createGoalCategory: async (data, token) => {
-    return await axios.post(BACK_URL + '/api/goal_categories', data, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  createGoalCategory: async data => {
+    return await axios.post('goal_categories', data);
   },
 };
 

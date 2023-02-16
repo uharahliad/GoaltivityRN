@@ -1,33 +1,33 @@
-import axios from 'axios';
-import {BACK_URL} from '@env';
-
-console.log(BACK_URL, 1);
+import axios from './axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 const auth = {
   login: async data => {
-    return await axios.post(BACK_URL + '/api/auth/signin/local', data);
+    return await axios.post('auth/signin/local', data);
   },
   register: async data => {
-    return await axios.post(BACK_URL + '/api/auth/signup', data);
+    return await axios.post('auth/signup', data);
   },
-  ValidateToken: async token => {
-    return await axios.get(BACK_URL + '/api/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+  getMe: async () => {
+    return await axios.get('auth/me');
+  },
+  async logout() {
+    await EncryptedStorage.removeItem('token');
   },
   resetPassword: async body => {
-    return await axios.post(BACK_URL + '/api/auth/generate-password', body);
+    return await axios.put('auth/generate-password', body);
+  },
+  changePassword: async body => {
+    return await axios.put('auth/password-update', body);
   },
   verifyEmail: async body => {
-    return await axios.put(BACK_URL + '/api/auth/verify-email', body);
+    return await axios.put('auth/verify-email', body);
   },
   getTwilioToken: async username => {
-    return await axios.get(BACK_URL + `/token/${username}`);
+    return await axios.get(`/token/${username}`);
   },
   test: async () => {
-    return await axios.get(BACK_URL + '/api/auth/test');
+    return await axios.get('auth/test');
   },
 };
 
