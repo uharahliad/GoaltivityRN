@@ -735,6 +735,7 @@ const EditGoalItem = ({navigation, route}) => {
                     date={startDate}
                     onDateChange={setStartDate}
                     textColor={'#1F1C1B'}
+                    theme={'light'}
                     onConfirm={date => {
                       setDateOpen(false);
                       setStartDate(date);
