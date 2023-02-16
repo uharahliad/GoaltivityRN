@@ -558,6 +558,7 @@ const AddGoalItem = ({navigation}) => {
                 open={dateOpen}
                 date={startDate}
                 onDateChange={setStartDate}
+                theme={'light'}
                 textColor={'#1F1C1B'}
                 onConfirm={date => {
                   setDateOpen(false);
